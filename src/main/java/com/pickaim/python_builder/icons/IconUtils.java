@@ -1,4 +1,4 @@
-package com.pickaim.python_builder.win_factories;
+package com.pickaim.python_builder.icons;
 
 import org.apache.batik.anim.dom.SVGDOMImplementation;
 import org.apache.batik.transcoder.TranscoderException;

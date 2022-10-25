@@ -1,9 +1,9 @@
 package com.pickaim.python_builder.win_factories;
 
 import com.intellij.openapi.wm.ToolWindow;
+import com.pickaim.python_builder.action_tree.TreeBuilder;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 
 public class ToolbarView {

@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("maven-publish")
     id("org.jetbrains.intellij") version "1.8.0"
 }
 
@@ -8,6 +9,7 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -17,6 +19,17 @@ intellij {
     type.set("PC") // Target IDE Platform
 
     plugins.set(listOf(/* Plugin Dependencies */))
+}
+
+
+publishing {
+    repositories {
+        /*maven {
+//            mavenLocal()
+//            url "C:\\Users\\dima-\\.m2\\repository\\"
+        }*/
+        mavenLocal()
+    }
 }
 
 tasks {
