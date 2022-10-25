@@ -9,12 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class MyToolWindowFactory implements ToolWindowFactory {
 
-    /**
-     * Create the tool window content.
-     *
-     * @param project    current project
-     * @param toolWindow current tool window
-     */
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         ToolbarView myToolWindow = new ToolbarView(toolWindow);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();

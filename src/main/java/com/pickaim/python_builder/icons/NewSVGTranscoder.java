@@ -5,7 +5,7 @@ import org.apache.batik.transcoder.image.ImageTranscoder;
 
 import java.awt.image.BufferedImage;
 
-class SVGTranscoder extends ImageTranscoder {
+public class NewSVGTranscoder extends ImageTranscoder {
     private BufferedImage image = null;
     public BufferedImage createImage(int w, int h) {
         image = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
