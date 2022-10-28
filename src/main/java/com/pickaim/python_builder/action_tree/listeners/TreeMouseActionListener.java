@@ -1,10 +1,7 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.NonEmptyInputValidator;
-import com.intellij.terminal.TerminalShellCommandHandler;
 import com.pickaim.python_builder.action_tree.TreeCommands;
-import com.intellij.terminal.TerminalExecutionConsole;
 import com.pickaim.python_builder.utils.PathUtils;
 import com.pickaim.python_builder.utils.ProjectBuilder;
 import org.apache.commons.lang3.StringUtils;
