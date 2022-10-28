@@ -21,16 +21,6 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="PyBuilder" factoryClass="com.pickaim.python_builder.win_factories.MyToolWindowFactory" anchor="right"/>
-        <applicationService serviceImplementation="com.pickaim.python_builder.MyFirstPluginClass"/>
     </extensions>
-    <actions>
-        <group id="PyBuild.Actions" text="PyBuild" description="Any actions">
-            <add-to-group group-id="MainMenu">
-            </add-to-group>
-            <action id="com.pickaim.python_builder.MyFirstPluginClass" class="com.pickaim.python_builder.MyFirstPluginClass"
-                    text="ShowMessage">
-            </action>
-        </group>
 
-    </actions>
 </idea-plugin>

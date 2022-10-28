@@ -10,7 +10,7 @@ public class ToolbarView {
     private final JPanel myToolWindowContent = new JPanel(new BorderLayout());
     public ToolbarView(ToolWindow toolWindow) {
         myToolWindowContent.setLocation(0,0);
-        myToolWindowContent.add(TreeBuilder.buildTreeFor(toolWindow.getProject().getName()));
+        myToolWindowContent.add(TreeBuilder.buildTreeFor(toolWindow.getProject()));
     }
 
     public JPanel getContent() {

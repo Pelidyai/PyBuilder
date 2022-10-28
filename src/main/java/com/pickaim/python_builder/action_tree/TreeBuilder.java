@@ -1,5 +1,6 @@
 package com.pickaim.python_builder.action_tree;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.JBUI;
 import com.pickaim.python_builder.action_tree.listeners.TreeMouseActionListener;
 import com.pickaim.python_builder.icons.IconPath;
@@ -12,8 +13,8 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import java.util.Arrays;
 
 public class TreeBuilder {
-    public static JTree buildTreeFor(String projectName){
-        DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode(projectName);
+    public static JTree buildTreeFor(Project project){
+        DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode(project.getName());
         addBuildNode(treeRoot);
         JTree tree = new JTree(treeRoot);
         tree.setBorder(JBUI.Borders.empty());
@@ -24,7 +25,7 @@ public class TreeBuilder {
         treeCellRenderer.setOpenIcon(IconUtils.getSVGIcon(PathUtils.getURLString(IconPath.OPENED_DIR_ICON)));
 
         System.out.println(Arrays.toString(tree.getActionMap().allKeys()));
-        tree.addMouseListener(new TreeMouseActionListener(tree));
+        tree.addMouseListener(new TreeMouseActionListener(tree, project.getBasePath()));
         tree.setCellRenderer(treeCellRenderer);
 
         return tree;
