@@ -9,17 +9,19 @@
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="dima-pile@mail.ru" url="">PickAim</vendor>
-
     <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-    <description/>
+    <description><![CDATA[
+        Python build-system plugin, which can help you build your project with different components from git and pip.
+    ]]></description>>
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup displayType="BALLOON" id="build"/>
         <toolWindow id="PyBuilder" factoryClass="com.pickaim.python_builder.win_factories.MyToolWindowFactory" anchor="right"/>
     </extensions>
 

@@ -1,7 +1,11 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
+import com.intellij.openapi.progress.impl.ProgressManagerImpl;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.ui.NonEmptyInputValidator;
 import com.pickaim.python_builder.action_tree.TreeCommands;
+import com.pickaim.python_builder.action_tree.threads.BuildThread;
 import com.pickaim.python_builder.utils.PathUtils;
 import com.pickaim.python_builder.utils.ProjectBuilder;
 import org.apache.commons.lang3.StringUtils;
@@ -15,11 +19,14 @@ import java.io.IOException;
 public class TreeMouseActionListener implements MouseListener {
     private final JTree tree;
 
-    private final String projectPath;
+    private final BuildThread buildThread;
 
-    public TreeMouseActionListener(JTree tree, String projectPath) {
+    private final Project project;
+
+    public TreeMouseActionListener(JTree tree, Project project) {
         this.tree = tree;
-        this.projectPath = projectPath;
+        this.project = project;
+        this.buildThread = new BuildThread(project, "Build process");
     }
 
     @Override
@@ -59,25 +66,25 @@ public class TreeMouseActionListener implements MouseListener {
         try {
             switch (command) {
                 case TreeCommands.BUILD: {
-                    Process process = Runtime.getRuntime().exec("where python");
-                    String input = new String(process.getInputStream().readAllBytes());
-                    String[] pythonDirs = StringUtils.splitByWholeSeparator(input, "\r\n");
-                    if(pythonDirs.length < 1){
-                        Messages.showErrorDialog("Python interpreter not found", "Python Interpreter Problem");
-                        return;
+                    if (!buildThread.isAlive()) {
+                        Process process = Runtime.getRuntime().exec("where python");
+                        String input = new String(process.getInputStream().readAllBytes());
+                        String[] pythonDirs = StringUtils.splitByWholeSeparator(input, "\r\n");
+                        if (pythonDirs.length < 1) {
+                            Messages.showErrorDialog("Python interpreter not found", "Python Interpreter Problem");
+                            return;
+                        }
+                        String pythonDir = pythonDirs[0];
+                        if (pythonDirs.length > 1) {
+                            pythonDir = Messages.showEditableChooseDialog("Select interpreter", "Interpreter Selecting",
+                                    Messages.getQuestionIcon(), pythonDirs, pythonDirs[0], new NonEmptyInputValidator());
+                        }
+                        ProjectBuilder.setPythonDir(PathUtils.getPythonPackagesPath(pythonDir));
+                        new ProgressManagerImpl().run(buildThread);
+//                        new CoreProgressManager().run(buildThread);
+                    } else {
+                        Messages.showInfoMessage("Build is running", "Build Results");
                     }
-                    String pythonDir = pythonDirs[0];
-                    /*if(pythonDirs.length > 1) {
-                        pythonDir = Messages.showEditableChooseDialog("Select interpreter", "Interpreter Selecting",
-                                Messages.getQuestionIcon(), pythonDirs, pythonDirs[0], new NonEmptyInputValidator());
-                    }*/
-                    pythonDir = PathUtils.getPythonPackagesPath(pythonDir);
-                    try {
-                        ProjectBuilder.buildProject(projectPath, pythonDir);
-                    } catch (Exception e) {
-                        Messages.showErrorDialog(e.getMessage(), "Build Error");
-                    }
-                    System.out.println(pythonDir);
                     break;
                 }
                 default: {

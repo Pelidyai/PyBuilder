@@ -25,7 +25,7 @@ public class TreeBuilder {
         treeCellRenderer.setOpenIcon(IconUtils.getSVGIcon(PathUtils.getURLString(IconPath.OPENED_DIR_ICON)));
 
         System.out.println(Arrays.toString(tree.getActionMap().allKeys()));
-        tree.addMouseListener(new TreeMouseActionListener(tree, project.getBasePath()));
+        tree.addMouseListener(new TreeMouseActionListener(tree, project));
         tree.setCellRenderer(treeCellRenderer);
 
         return tree;
