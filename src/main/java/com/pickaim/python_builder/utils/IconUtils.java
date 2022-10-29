@@ -31,29 +31,4 @@ public class IconUtils {
         }
         return new ImageIcon(transcoder.getImage());
     }
-
-   /* public static org.apache.batik.gvt.GraphicsNode getSvgIcon(java.net.URL url) {
-        org.apache.batik.gvt.GraphicsNode svgIcon = null;
-        try {
-            String xmlParser = XMLResourceDescriptor.getXMLParserClassName();
-            SAXSVGDocumentFactory df = new SAXSVGDocumentFactory(xmlParser);
-            SVGDocument doc = df.createSVGDocument(url.toString());
-            UserAgent userAgent = new UserAgentAdapter();
-            DocumentLoader loader = new DocumentLoader(userAgent);
-            BridgeContext ctx = new BridgeContext(userAgent, loader);
-            ctx.setDynamicState(BridgeContext.DYNAMIC);
-            GVTBuilder builder = new GVTBuilder();
-            svgIcon = builder.build(ctx, doc);
-        } catch (Exception excp) {
-            excp.printStackTrace();
-        }
-        return svgIcon;
-    }
-
-    public static void paintSvgIcon(java.awt.Graphics2D g, org.apache.batik.gvt.GraphicsNode svgIcon, int x, int y, double scaleX, double scaleY) {
-        java.awt.geom.AffineTransform transform = new java.awt.geom.AffineTransform(scaleX, 0.0, 0.0, scaleY, x, y);
-        g.setBackground(new JBColor(new Color(1f, 0f, 0f, .0f), JBColor.DARK_GRAY));
-        svgIcon.setTransform(transform);
-        svgIcon.paint(g);
-    }*/
 }
