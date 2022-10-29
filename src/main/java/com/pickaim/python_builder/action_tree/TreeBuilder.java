@@ -11,29 +11,30 @@ import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.util.Arrays;
+import com.intellij.ui.treeStructure.Tree;
 
 public class TreeBuilder {
     public static JTree buildTreeFor(Project project){
-        DefaultMutableTreeNode treeRoot = new DefaultMutableTreeNode(project.getName());
+        SimpleTreeNode treeRoot = new SimpleTreeNode(project.getName());
         addBuildNode(treeRoot);
-        JTree tree = new JTree(treeRoot);
+        Tree tree = new Tree(treeRoot);
         tree.setBorder(JBUI.Borders.empty());
-
-        DefaultTreeCellRenderer treeCellRenderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
         treeCellRenderer.setLeafIcon(IconUtils.getSVGIcon(PathUtils.getURLString(IconPath.LEAF_SCRIPT_ICON)));
         treeCellRenderer.setClosedIcon(IconUtils.getSVGIcon(PathUtils.getURLString(IconPath.CLOSED_DIR_ICON)));
         treeCellRenderer.setOpenIcon(IconUtils.getSVGIcon(PathUtils.getURLString(IconPath.OPENED_DIR_ICON)));
 
         System.out.println(Arrays.toString(tree.getActionMap().allKeys()));
         tree.addMouseListener(new TreeMouseActionListener(tree, project));
+        tree.setVisible(true);
         tree.setCellRenderer(treeCellRenderer);
 
         return tree;
     }
 
     private static void addBuildNode(DefaultMutableTreeNode treeRoot){
-        DefaultMutableTreeNode buildTree = new DefaultMutableTreeNode("Build tool");
-        buildTree.add(new DefaultMutableTreeNode(TreeCommands.BUILD));
+        SimpleTreeNode buildTree = new SimpleTreeNode("Build tool");
+        buildTree.add(new SimpleTreeNode(TreeCommands.BUILD));
         treeRoot.add(buildTree);
     }
 }
