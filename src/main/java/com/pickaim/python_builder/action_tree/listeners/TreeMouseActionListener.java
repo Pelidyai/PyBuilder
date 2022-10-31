@@ -81,7 +81,6 @@ public class TreeMouseActionListener implements MouseListener {
                         }
                         ProjectBuilder.setPythonDir(PathUtils.getPythonPackagesPath(pythonDir));
                         new ProgressManagerImpl().run(buildThread);
-//                        new CoreProgressManager().run(buildThread);
                     } else {
                         Messages.showInfoMessage("Build is running", "Build Results");
                     }
