@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.pickaim"
-version = "1.1.1"
+version = "1.1.2"
 
 repositories {
     mavenCentral()
@@ -18,7 +18,7 @@ intellij {
     version.set("2022.1.1")
     type.set("PC") // Target IDE Platform
 
-    plugins.set(listOf(/* Plugin Dependencies */))
+    plugins.set(listOf("PythonCore"/* Plugin Dependencies */))
 }
 
 

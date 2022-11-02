@@ -3,6 +3,7 @@ package com.pickaim.python_builder.action_tree;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.JBUI;
+import com.jetbrains.python.inspections.PyInterpreterInspection;
 import com.pickaim.python_builder.action_tree.listeners.TreeMouseActionListener;
 
 import javax.swing.*;
@@ -12,10 +13,13 @@ import java.util.Arrays;
 import com.intellij.ui.treeStructure.Tree;
 
 public class TreeBuilder {
-    public static JTree buildTreeFor(Project project){
+    public static JTree buildActionTree(Project project){
         SimpleTreeNode treeRoot = new SimpleTreeNode(project.getName());
         addBuildNode(treeRoot);
         Tree tree = new Tree(treeRoot);
+        PyInterpreterInspection g = new PyInterpreterInspection();
+        g.getMainToolId();
+        System.out.println(g);
         tree.setBorder(JBUI.Borders.empty());
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
         treeCellRenderer.setLeafIcon(AllIcons.Nodes.Services);
