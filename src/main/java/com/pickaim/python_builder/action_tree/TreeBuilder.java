@@ -3,23 +3,24 @@ package com.pickaim.python_builder.action_tree;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.util.ui.JBUI;
-import com.jetbrains.python.inspections.PyInterpreterInspection;
-import com.pickaim.python_builder.action_tree.listeners.TreeMouseActionListener;
+import com.pickaim.python_builder.action_tree.listeners.BuildATMouseListener;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import java.util.Arrays;
 import com.intellij.ui.treeStructure.Tree;
+import com.pickaim.python_builder.action_tree.listeners.PublishATMouseListener;
+import com.pickaim.python_builder.action_tree.listeners.UtilATMouseListener;
 
 public class TreeBuilder {
     public static JTree buildActionTree(Project project){
         SimpleTreeNode treeRoot = new SimpleTreeNode(project.getName());
         addBuildNode(treeRoot);
+        addPublishNode(treeRoot);
+        addUtilNode(treeRoot);
         Tree tree = new Tree(treeRoot);
-        PyInterpreterInspection g = new PyInterpreterInspection();
-        g.getMainToolId();
-        System.out.println(g);
+
         tree.setBorder(JBUI.Borders.empty());
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
         treeCellRenderer.setLeafIcon(AllIcons.Nodes.Services);
@@ -27,7 +28,9 @@ public class TreeBuilder {
         treeCellRenderer.setOpenIcon(AllIcons.Actions.GeneratedFolder);
 
         System.out.println(Arrays.toString(tree.getActionMap().allKeys()));
-        tree.addMouseListener(new TreeMouseActionListener(tree, project));
+        tree.addMouseListener(new BuildATMouseListener(tree, project));
+        tree.addMouseListener(new PublishATMouseListener(tree));
+        tree.addMouseListener(new UtilATMouseListener(tree));
         tree.setVisible(true);
         tree.setCellRenderer(treeCellRenderer);
 
@@ -35,8 +38,21 @@ public class TreeBuilder {
     }
 
     private static void addBuildNode(DefaultMutableTreeNode treeRoot){
-        SimpleTreeNode buildTree = new SimpleTreeNode("Build tool");
+        SimpleTreeNode buildTree = new SimpleTreeNode("build");
         buildTree.add(new SimpleTreeNode(TreeCommands.BUILD));
+        buildTree.add(new SimpleTreeNode(TreeCommands.CLEAN));
         treeRoot.add(buildTree);
+    }
+
+    private static void addPublishNode(DefaultMutableTreeNode treeRoot){
+        SimpleTreeNode publishTree = new SimpleTreeNode("publishing");
+        publishTree.add(new SimpleTreeNode(TreeCommands.PUBLISH));
+        treeRoot.add(publishTree);
+    }
+
+    private static void addUtilNode(DefaultMutableTreeNode treeRoot){
+        SimpleTreeNode utilTree = new SimpleTreeNode("utils");
+        utilTree.add(new SimpleTreeNode(TreeCommands.INTERPRETER));
+        treeRoot.add(utilTree);
     }
 }

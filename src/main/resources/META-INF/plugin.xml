@@ -22,6 +22,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="build"/>
+        <notificationGroup displayType="BALLOON" id="util-settings"/>
         <toolWindow id="PyBuilder" factoryClass="com.pickaim.python_builder.win_factories.MyToolWindowFactory" anchor="right"/>
     </extensions>
 

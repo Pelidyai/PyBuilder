@@ -37,7 +37,7 @@ public class ProjectBuilder {
         subText = "Loading components for " + componentPath[componentPath.length - 1] + " - ";
         for(String key: links.keySet()) {
             indicator.setText2(subText + key);
-            if (isNeedClone(pythonDir, key, versions.get(key))) {
+            if (isNeedClone(key, versions.get(key))) {
                 String p = pythonDir + "\\" + key;
                 if(new File(p).exists()) {
                     Runtime.getRuntime().exec("cmd.exe /k rd /s /q " + p).waitFor();
@@ -80,7 +80,7 @@ public class ProjectBuilder {
         }
     }
     
-    private static boolean isNeedClone(String pythonDir, String name, String newVersion) throws Exception{
+    private static boolean isNeedClone(String name, String newVersion) throws Exception{
         File path = new File(pythonDir + "\\" + name);
         if(!path.exists()){
             return true;
