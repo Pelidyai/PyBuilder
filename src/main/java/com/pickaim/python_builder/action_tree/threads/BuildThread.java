@@ -28,8 +28,8 @@ public class BuildThread extends Task.Backgroundable {
             Notifications.Bus.notify(new Notification("build", "Build results",
                     "Build successful", NotificationType.INFORMATION));
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification("build", "Build error", e.getMessage(), NotificationType.ERROR));
             isAlive = false;
+            Notifications.Bus.notify(new Notification("build", "Build error", e.getMessage(), NotificationType.ERROR));
         }
     }
 

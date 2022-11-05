@@ -41,7 +41,6 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
     private void build(){
         if (!buildThread.isAlive()) {
             ProjectProperty.checkInterpreter();
-            ProjectBuilder.setPythonDir(ProjectProperty.getPythonDir());
             new ProgressManagerImpl().run(buildThread);
         } else {
             Notifications.Bus.notify(new Notification("build", "Build process",
