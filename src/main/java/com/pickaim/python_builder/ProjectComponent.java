@@ -1,6 +1,10 @@
 package com.pickaim.python_builder;
 
+import com.pickaim.python_builder.utils.ProjectProperty;
 import com.pickaim.python_builder.utils.VersionUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
 
 public class ProjectComponent {
     private final String name;
@@ -47,8 +51,19 @@ public class ProjectComponent {
                 && other.getBranch().equals(this.branch);
     }
 
-    public void cloning(){
-        //TODO
+    public void cloning() throws Exception{
+        String command;
+        if(StringUtils.isEmpty(branch)){
+            command = "git clone" +
+                    " " + link +
+                    " " + ProjectProperty.getPythonDir() + File.separator + name;
+        } else {
+            command = "git clone --branch " + branch + "/" +
+                    version +
+                    " " + link +
+                    " " + ProjectProperty.getPythonDir() + File.separator + name;
+        }
+        Runtime.getRuntime().exec(command).waitFor();
     }
 
     public boolean isLower(ProjectComponent other){

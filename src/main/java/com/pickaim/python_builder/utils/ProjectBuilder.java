@@ -41,18 +41,7 @@ public class ProjectBuilder {
                     FileUtils.deleteDirectory(new File(p));
                     Files.createDirectory(Paths.get(p));
                 }
-                String command;
-                if(StringUtils.isEmpty(component.getBranch())){
-                    command = "git clone" +
-                            " " + component.getLink() +
-                            " " + ProjectProperty.getPythonDir() + File.separator + name;
-                } else {
-                    command = "git clone --branch " + component.getBranch() + "/" +
-                            component.getVersion() +
-                            " " + component.getLink() +
-                            " " + ProjectProperty.getPythonDir() + File.separator + name;
-                }
-                Runtime.getRuntime().exec(command).waitFor();
+                component.cloning();
                 buildProject(p, indicator);
             }
             fraction += step;
