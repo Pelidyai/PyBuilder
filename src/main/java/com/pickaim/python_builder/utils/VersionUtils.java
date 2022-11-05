@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VersionUtils {
-
     public static boolean isVersionLower(String oldV, String newV){
         List<Integer> oldInt =  getVersionInts(oldV);
         List<Integer> newInt =  getVersionInts(newV);

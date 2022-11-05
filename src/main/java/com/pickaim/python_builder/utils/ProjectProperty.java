@@ -19,8 +19,8 @@ public class ProjectProperty {
     
     private static String pythonDir = "";
 
-    private static final String EQ_SEPARATOR = "=";
-    private static final String VB_SEPARATOR = ":";
+    public static final String EQ_SEPARATOR = "=";
+    public static final String VB_SEPARATOR = ":";
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
 
@@ -99,10 +99,10 @@ public class ProjectProperty {
     }
 
     public static List<String> getRequirements(String path) throws Exception{
-        try(FileInputStream input = new FileInputStream(path + "\\" + "requirements.txt")){
+        try(FileInputStream input = new FileInputStream(path + File.separator + "requirements.txt")){
             return new ArrayList<>(Arrays.asList(org.apache.commons.lang3.StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n")));
         } catch (IOException e) {
-            throw new Exception("File " + path + "\\" + "requirements.txt not found");
+            throw new Exception("File " + path + File.separator + "requirements.txt not found");
         }
     }
 

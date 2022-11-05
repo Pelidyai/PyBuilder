@@ -2,9 +2,12 @@ package com.pickaim.python_builder.utils;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.pickaim.python_builder.ProjectComponent;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class ProjectBuilder {
@@ -13,7 +16,7 @@ public class ProjectBuilder {
         List<String> requirements = ProjectProperty.getRequirements(projectPath);
         double fraction = 0.0;
         double step = 1.0 / requirements.size();
-        String[] componentPath = StringUtils.splitByWholeSeparator(projectPath, "\\");
+        String[] componentPath = StringUtils.splitByWholeSeparator(projectPath, File.separator);
         String subText = "Loading requirements for " + componentPath[componentPath.length - 1] + " - ";
         Map<String, String> packages = ProjectProperty.getPackages();
         for(String requirement: requirements){
@@ -33,21 +36,21 @@ public class ProjectBuilder {
             indicator.setText2(subText + name);
             ProjectComponent component = componentMap.get(name);
             if (isNeedClone(component)) {
-                String p = ProjectProperty.getPythonDir() + "\\" + name;
+                String p = ProjectProperty.getPythonDir() + File.separator + name;
                 if(new File(p).exists()) {
-                    Runtime.getRuntime().exec("cmd.exe /k rd /s /q " + p).waitFor();
-                    Runtime.getRuntime().exec("cmd.exe /k mkdir " + p).waitFor();
+                    FileUtils.deleteDirectory(new File(p));
+                    Files.createDirectory(Paths.get(p));
                 }
                 String command;
                 if(StringUtils.isEmpty(component.getBranch())){
                     command = "git clone" +
                             " " + component.getLink() +
-                            " " + ProjectProperty.getPythonDir() + "\\" + name;
+                            " " + ProjectProperty.getPythonDir() + File.separator + name;
                 } else {
                     command = "git clone --branch " + component.getBranch() + "/" +
                             component.getVersion() +
                             " " + component.getLink() +
-                            " " + ProjectProperty.getPythonDir() + "\\" + name;
+                            " " + ProjectProperty.getPythonDir() + File.separator + name;
                 }
                 Runtime.getRuntime().exec(command).waitFor();
                 buildProject(p, indicator);
@@ -58,11 +61,14 @@ public class ProjectBuilder {
     }
 
     private static boolean isNeedClone(ProjectComponent component) throws Exception{
-        File path = new File(ProjectProperty.getPythonDir() + "\\" + component.getName());
+        File path = new File(ProjectProperty.getPythonDir() + File.separator + component.getName());
         if(!path.exists()){
             return true;
         }
         String oldVersion = ProjectProperty.load(path.getPath(), ProjectProperty.VERSION_FILE).get(component.getName());
+        if(oldVersion.contains(ProjectProperty.VB_SEPARATOR)){
+            oldVersion = StringUtils.split(oldVersion, ProjectProperty.VB_SEPARATOR)[0];
+        }
         ProjectComponent oldComponent = new ProjectComponent(component.getName(), oldVersion, component.getLink(), component.getBranch());
         return StringUtils.isEmpty(component.getBranch()) || oldComponent.isLower(component);
     }

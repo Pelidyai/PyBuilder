@@ -8,7 +8,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.action_tree.threads.BuildThread;
-import com.pickaim.python_builder.utils.ProjectBuilder;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
 import javax.swing.*;
