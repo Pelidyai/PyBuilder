@@ -5,19 +5,21 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.progress.impl.ProgressManagerImpl;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.action_tree.threads.BuildThread;
+import com.pickaim.python_builder.action_tree.threads.CleanThread;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
 import javax.swing.*;
 
 public class BuildATMouseListener extends AbstractActionTreeMouseListener {
     private final BuildThread buildThread;
+    private final CleanThread cleanThread;
 
     public BuildATMouseListener(JTree tree, Project project){
         super(tree);
         this.buildThread = new BuildThread(project, "Build process");
+        this.cleanThread = new CleanThread(project, "Clean process");
     }
 
     @Override
@@ -28,7 +30,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
                 break;
             }
             case TreeCommands.CLEAN:{
-                Messages.showInfoMessage("Clean", "Clean");
+                clean();
                 break;
             }
             default:{
@@ -44,6 +46,16 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
         } else {
             Notifications.Bus.notify(new Notification("build", "Build process",
                     "Build is running", NotificationType.ERROR));
+        }
+    }
+
+    private void clean(){
+        if (!cleanThread.isAlive()) {
+            ProjectProperty.checkInterpreter();
+            new ProgressManagerImpl().run(cleanThread);
+        } else {
+            Notifications.Bus.notify(new Notification("clean", "Clean process",
+                    "Clean is running", NotificationType.ERROR));
         }
     }
 }

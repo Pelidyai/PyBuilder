@@ -2,7 +2,6 @@ package com.pickaim.python_builder.action_tree;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
-import com.intellij.util.ui.JBUI;
 import com.pickaim.python_builder.action_tree.listeners.BuildATMouseListener;
 
 import javax.swing.*;
@@ -21,7 +20,6 @@ public class TreeBuilder {
         addUtilNode(treeRoot);
         Tree tree = new Tree(treeRoot);
 
-        tree.setBorder(JBUI.Borders.empty());
         DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
         treeCellRenderer.setLeafIcon(AllIcons.Nodes.Services);
         treeCellRenderer.setClosedIcon(AllIcons.Nodes.ConfigFolder);

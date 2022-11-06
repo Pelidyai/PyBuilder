@@ -55,9 +55,10 @@ public class ProjectBuilder {
             return true;
         }
         String oldVersion = ProjectProperty.load(path.getPath(), ProjectProperty.VERSION_FILE).get(component.getName());
-        if(oldVersion.contains(ProjectProperty.VB_SEPARATOR)){
-            oldVersion = StringUtils.split(oldVersion, ProjectProperty.VB_SEPARATOR)[0];
+        if(oldVersion == null){
+            return true;
         }
+        oldVersion = ProjectProperty.getVersionBranch(oldVersion)[0];
         ProjectComponent oldComponent = new ProjectComponent(component.getName(), oldVersion, component.getLink(), component.getBranch());
         return StringUtils.isEmpty(component.getBranch()) || oldComponent.isLower(component);
     }

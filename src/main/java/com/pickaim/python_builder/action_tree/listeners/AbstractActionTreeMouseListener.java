@@ -14,11 +14,13 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        int selRow = tree.getRowForLocation(e.getX(), e.getY());
-        TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-        if (selRow != -1 && selPath != null) {
-            if (e.getClickCount() == 2) {
-                runCommand(selPath.getLastPathComponent().toString());
+        if(e.getButton() == MouseEvent.BUTTON1) {
+            int selRow = tree.getRowForLocation(e.getX(), e.getY());
+            TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
+            if (selRow != -1 && selPath != null) {
+                if (e.getClickCount() == 2) {
+                    runCommand(selPath.getLastPathComponent().toString());
+                }
             }
         }
     }

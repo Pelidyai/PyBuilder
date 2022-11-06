@@ -16,13 +16,14 @@ import java.io.IOException;
 import java.util.*;
 
 public class ProjectProperty {
-    
-    private static String pythonDir = "";
-
     public static final String EQ_SEPARATOR = "=";
     public static final String VB_SEPARATOR = ":";
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
+    private static String projectPath = "";
+    private static String pythonDir = "";
+
+    private static Set<ProjectComponent> projectComponents;
 
     public static String getPythonDir(){
         return pythonDir;
@@ -40,43 +41,72 @@ public class ProjectProperty {
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
     }
 
+    public static void initComponents(){
+        try {
+            getComponents(projectPath);
+        } catch (Exception e) {
+            Notifications.Bus.notify(new Notification("util-settings", "Components error", e.getMessage(), NotificationType.ERROR));
+        }
+    }
+
+    public static Set<ProjectComponent> getProjectComponents() {
+        return projectComponents;
+    }
+
     public static Map<String, ProjectComponent> getComponents(String path) throws Exception{
         Map<String, String> versions = load(path, VERSION_FILE);
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
         for(String name: links.keySet()){
             if(!StringUtils.isEmpty(versions.get(name))) {
-                String[] versionBranch = StringUtils.split(versions.get(name), VB_SEPARATOR);
-                String branch = "";
-                if (versions.get(name).contains(VB_SEPARATOR)) {
-                    branch = versionBranch[1];
-                }
-                result.put(name, new ProjectComponent(name, versionBranch[0], links.get(name), branch));
+                String[] vB = getVersionBranch(versions.get(name));
+                result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1]));
             } else {
                 result.put(name, new ProjectComponent(name, "", links.get(name), ""));
             }
+        }
+        if(path.equals(projectPath)){
+            projectComponents = new HashSet<>(result.values());
         }
         return result;
     }
 
     public static Map<String, String> load(String path, String fileName) throws Exception {
-        String filePath = path + '\\' + fileName;
-        if(!new File(filePath).exists()){
-            throw new Exception("File " + filePath + " doesn't exist.");
-        }
+        String filePath = path + File.separator + fileName;
+        Map<String, String> resultMap = new HashMap<>();
         try (FileInputStream fileInput = new FileInputStream(filePath)) {
-            String[] lines = org.apache.commons.lang3.StringUtils.splitByWholeSeparator(new String(fileInput.readAllBytes()), "\r\n");
-            Map<String, String> resultMap = new HashMap<>();
+            String[] lines = StringUtils.splitByWholeSeparator(new String(fileInput.readAllBytes()), "\r\n");
             for(String line: lines){
-                if(!org.apache.commons.lang3.StringUtils.isEmpty(line)){
-                    String[] pair = org.apache.commons.lang3.StringUtils.split(line, EQ_SEPARATOR);
-                    resultMap.put(pair[0], pair[1]);
+                if(!StringUtils.isEmpty(line)){
+                    String[] pair = StringUtils.split(line, EQ_SEPARATOR);
+                    if(pair.length == 2) {
+                        resultMap.put(pair[0], pair[1]);
+                    } else {
+                        resultMap.put(pair[0], "");   
+                    }
                 }
             }
             return resultMap;
         } catch (IOException e){
-            throw new Exception("IOException with" + filePath + "file");
+            if(projectPath.equals(path)) {
+                throw new Exception("IOException with" + filePath + "file");
+            } else {
+                return resultMap;
+            }
         }
+    }
+
+    public static String[] getVersionBranch(String input){
+        String[] result = new String[2];
+        if(input.contains(VB_SEPARATOR)) {
+            int idx = input.indexOf(VB_SEPARATOR);
+            result[0] = input.substring(0, idx);
+            result[1] = input.substring(idx + 1);
+        } else {
+            result[0] = "";
+            result[1] = input;
+        }
+        return result;
     }
 
     private static String getSelectedInterpreter(){
@@ -109,15 +139,23 @@ public class ProjectProperty {
     public static Map<String, String> getPackages() throws Exception{
         Process packagesGetting = Runtime.getRuntime().exec("pip freeze");
         packagesGetting.waitFor();
-        String[] packages = org.apache.commons.lang3.StringUtils.splitByWholeSeparator(new String(packagesGetting.getInputStream().readAllBytes()), "\r\n");
+        String[] packages = StringUtils.splitByWholeSeparator(new String(packagesGetting.getInputStream().readAllBytes()), "\r\n");
         Map<String, String> result = new HashMap<>();
         for(String pack: packages){
-            if(!org.apache.commons.lang3.StringUtils.isEmpty(pack)) {
-                String[] pair = org.apache.commons.lang3.StringUtils.split(pack, "==");
+            if(!StringUtils.isEmpty(pack)) {
+                String[] pair = StringUtils.split(pack, "==");
                 result.put(pair[0], pair[1]);
             }
         }
         return result;
+    }
+
+    public static String getProjectPath() {
+        return projectPath;
+    }
+
+    public static void setProjectPath(String projectPath) {
+        ProjectProperty.projectPath = projectPath;
     }
 
     public static String[] getRequirementNameAndVersion(String requirementWithVersion) throws Exception{

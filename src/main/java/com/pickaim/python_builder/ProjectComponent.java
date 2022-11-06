@@ -57,13 +57,22 @@ public class ProjectComponent {
             command = "git clone" +
                     " " + link +
                     " " + ProjectProperty.getPythonDir() + File.separator + name;
+        } else if(StringUtils.isEmpty(version)){
+            command = "git clone --branch " + branch +
+                    " " + link +
+                    " " + ProjectProperty.getPythonDir() + File.separator + name;
         } else {
             command = "git clone --branch " + branch + "/" +
                     version +
                     " " + link +
                     " " + ProjectProperty.getPythonDir() + File.separator + name;
         }
-        Runtime.getRuntime().exec(command).waitFor();
+        Process process = Runtime.getRuntime().exec(command);
+        int result = process.waitFor();
+        if(result != 0){
+            String errors = new String(process.getErrorStream().readAllBytes());
+            throw new Exception(errors);
+        }
     }
 
     public boolean isLower(ProjectComponent other){
