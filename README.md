@@ -34,9 +34,9 @@ component1=your_branch_name
 
 ## Tasks
 This plugin has 3 groups of tasks:
-* [Build](https://github.com/Pelidyai/PyBuilder/tree/master#build)
-* [Publish](https://github.com/Pelidyai/PyBuilder/tree/master#publish)
-* [Utils](https://github.com/Pelidyai/PyBuilder/tree/master#utils)
+* [Build](#build)
+* [Publish](#publish)
+* [Utils](#utils)
 
 ### Build
 
@@ -53,7 +53,7 @@ This task remove all loaded dependencies wich are specified in properties files.
 #### publish
 This task push your current commits and changes to remote repository of this project.
 ***Current project will be published to branch or directory wich are specified in version.properties*** 
-[version.properties](https://github.com/Pelidyai/PyBuilder/tree/master#versionproperties)
+[version.properties](#versionproperties)
 
 #### publishToLocal
 This task copy current project to your local interpreter site-packages path.
