@@ -128,11 +128,11 @@ public class ProjectProperty {
         return Objects.requireNonNull(PythonSdkUtil.getSitePackagesDirectory(pythonSdks.get(sdkIdx))).getPath();
     }
 
-    public static List<String> getRequirements(String path) throws Exception{
+    public static List<String> getRequirements(String path){
         try(FileInputStream input = new FileInputStream(path + File.separator + "requirements.txt")){
-            return new ArrayList<>(Arrays.asList(org.apache.commons.lang3.StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n")));
+            return new ArrayList<>(Arrays.asList(StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n")));
         } catch (IOException e) {
-            throw new Exception("File " + path + File.separator + "requirements.txt not found");
+            return new ArrayList<>();
         }
     }
 
