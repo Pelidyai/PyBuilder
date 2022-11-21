@@ -1,11 +1,11 @@
 # PyBuilder
-Plugin for PyCharm, wich can help you build your project with using differenet 
+Plugin for PyCharm, which can help you build your project with using differenet 
 components from remote repositories and publish your current project (compenent) with using of version control
 
 ## Files format
 PyBuilder works with two files: **link.properties** and **version.properties**
 ### link.properties
-In this file you need to write link for your git-component, wich you want to use in current project:
+In this file you need to write link for your git-component, which you want to use in current project:
 ```
 <component_name>=<component_link>
 component1=https:\\github.com\\your_repo
@@ -41,7 +41,7 @@ This plugin has 3 groups of tasks:
 ### Build
 
 #### build
-This task will build your project with remote-components wich are specified in properties files. 
+This task will build your project with remote-components which are specified in properties files. 
 All of this components will be installed into your **selected python interpreter**. 
 If component has properties files with list of dependencies - this task also load them.
 
