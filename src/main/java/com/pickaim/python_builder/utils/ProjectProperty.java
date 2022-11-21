@@ -20,7 +20,13 @@ public class ProjectProperty {
     public static final String VB_SEPARATOR = ":";
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
+
+    private static final String NEXUS_NAME = "nexus_link";
+
+    private static String nexusLink = "";
     private static String projectPath = "";
+
+    private static String projectName = "";
     private static String pythonDir = "";
 
     private static Set<ProjectComponent> projectComponents;
@@ -57,7 +63,10 @@ public class ProjectProperty {
         Map<String, String> versions = load(path, VERSION_FILE);
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
-        for(String name: links.keySet()){
+        if(StringUtils.isEmpty(nexusLink)) {
+            nexusLink = links.get(NEXUS_NAME);
+        }
+        for(String name: versions.keySet()){
             if(!StringUtils.isEmpty(versions.get(name))) {
                 String[] vB = getVersionBranch(versions.get(name));
                 result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1]));
@@ -154,8 +163,20 @@ public class ProjectProperty {
         return projectPath;
     }
 
+    public static String getNexusLink(){
+        return nexusLink;
+    }
+
+    public static String getProjectName() {
+        return projectName;
+    }
+
     public static void setProjectPath(String projectPath) {
         ProjectProperty.projectPath = projectPath;
+    }
+
+    public static void setProjectName(String projectName){
+        ProjectProperty.projectName= projectName;
     }
 
     public static String[] getRequirementNameAndVersion(String requirementWithVersion) throws Exception{

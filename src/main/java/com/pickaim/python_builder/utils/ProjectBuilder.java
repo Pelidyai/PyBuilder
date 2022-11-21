@@ -50,6 +50,9 @@ public class ProjectBuilder {
     }
 
     private static boolean isNeedClone(ProjectComponent component) throws Exception{
+        if(component.getName().equals(ProjectProperty.getProjectName())){
+            return false;
+        }
         File path = new File(ProjectProperty.getPythonDir() + File.separator + component.getName());
         if(!path.exists()){
             return true;

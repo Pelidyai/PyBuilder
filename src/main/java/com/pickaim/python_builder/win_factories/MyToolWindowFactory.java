@@ -21,6 +21,7 @@ public class MyToolWindowFactory implements ToolWindowFactory {
 
     private void init(Project project){
         ProjectProperty.setProjectPath(project.getBasePath());
+        ProjectProperty.setProjectName(project.getName());
         ProjectProperty.initComponents();
     }
 

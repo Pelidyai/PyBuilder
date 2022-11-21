@@ -12,11 +12,23 @@ public class ProjectComponent {
     private final String link;
     private final String branch;
 
-    public ProjectComponent(String name, String version, String link, String branch){
+    public ProjectComponent(String name, String version, String link, String branch) {
         this.name = name;
         this.version = version;
-        this.link = link;
-        this.branch = branch;
+        if(StringUtils.isEmpty(link)){
+            this.link = ProjectProperty.getNexusLink();
+        } else {
+            this.link = link;
+        }
+        if (branch.equals("release") || branch.equals("versions")) {
+            if(!StringUtils.isEmpty(version)) {
+                this.branch = branch + "/" + name + "/" + version;
+            } else {
+                this.branch = branch + "/" + name;
+            }
+        } else {
+            this.branch = branch;
+        }
     }
 
     public String getName(){
@@ -57,13 +69,8 @@ public class ProjectComponent {
             command = "git clone" +
                     " " + link +
                     " " + ProjectProperty.getPythonDir() + File.separator + name;
-        } else if(StringUtils.isEmpty(version)){
-            command = "git clone --branch " + branch +
-                    " " + link +
-                    " " + ProjectProperty.getPythonDir() + File.separator + name;
         } else {
-            command = "git clone --branch " + branch + "/" +
-                    version +
+            command = "git clone --branch " + branch +
                     " " + link +
                     " " + ProjectProperty.getPythonDir() + File.separator + name;
         }

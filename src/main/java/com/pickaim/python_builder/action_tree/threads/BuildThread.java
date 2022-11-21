@@ -4,17 +4,16 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProjectBuilder;
 import com.pickaim.python_builder.utils.ProjectProperty;
 import org.jetbrains.annotations.NotNull;
 
-public class BuildThread extends Task.Backgroundable {
+public class BuildThread extends AbstractBackgroundThread {
     private boolean isAlive = false;
 
     public BuildThread(Project project, String title) {
-        super(project, title, false);
+        super(project, title);
     }
 
     @Override
