@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -12,18 +13,17 @@ import java.util.*;
 
 public class ProjectBuilder {
     public static void buildProject(String projectPath, ProgressIndicator indicator) throws Exception{
-        Map<String, ProjectComponent> componentMap = ProjectProperty.getComponents(projectPath);
-        List<String> requirements = ProjectProperty.getRequirements(projectPath);
+        Map<String, ProjectComponent> componentMap = ProjectProperty.resolveComponents(projectPath);
+        Map<String, Pair<String, String>> requirements = ProjectProperty.resolveRequirements(projectPath);
         double fraction = 0.0;
         double step = 1.0 / requirements.size();
-        String[] componentPath = StringUtils.splitByWholeSeparator(projectPath, File.separator);
-        String subText = "Loading requirements for " + componentPath[componentPath.length - 1] + " - ";
-        Map<String, String> packages = ProjectProperty.getPackages();
-        for(String requirement: requirements){
-            String [] pair = ProjectProperty.getRequirementNameAndVersion(requirement);
-            if(!packages.containsKey(pair[0]) || VersionUtils.isVersionLower(packages.get(pair[0]), pair[1])) {
-                indicator.setText2(subText + requirement);
-                Runtime.getRuntime().exec("pip install " + requirement).waitFor();
+        String subText = "Loading requirement: ";
+        Map<String, Pair<String, String>> packages = ProjectProperty.resolvePackages();
+        for(String key: requirements.keySet()){
+            Pair<String, String> pair = requirements.get(key);
+            if(!packages.containsKey(pair.getKey()) || VersionUtils.isVersionLower(packages.get(key).getValue(), pair.getValue())) {
+                indicator.setText2(subText + key);
+                Runtime.getRuntime().exec("pip install " + key).waitFor();
             }
             fraction += step;
             indicator.setFraction(fraction);
@@ -31,7 +31,7 @@ public class ProjectBuilder {
         indicator.setFraction(0.0);
         fraction = 0.0;
         step = 1.0 / componentMap.size();
-        subText = "Loading components for " + componentPath[componentPath.length - 1] + " - ";
+        subText = "Loading artifact: ";
         for(String name: componentMap.keySet()) {
             indicator.setText2(subText + name);
             ProjectComponent component = componentMap.get(name);
@@ -61,7 +61,7 @@ public class ProjectBuilder {
         if(oldVersion == null){
             return true;
         }
-        oldVersion = ProjectProperty.getVersionBranch(oldVersion)[0];
+        oldVersion = ProjectProperty.resolveVersionBranch(oldVersion)[0];
         ProjectComponent oldComponent = new ProjectComponent(component.getName(), oldVersion, component.getLink(), component.getBranch());
         return StringUtils.isEmpty(component.getBranch()) || oldComponent.isLower(component);
     }

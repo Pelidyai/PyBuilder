@@ -9,6 +9,8 @@ import com.intellij.openapi.ui.NonEmptyInputValidator;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,17 +26,16 @@ public class ProjectProperty {
     private static final String NEXUS_NAME = "nexus_link";
     //#endregion
 
+    //#region Private fields
     private static String nexusLink = "";
     private static String projectPath = "";
     private static String projectName = "";
     private static String pythonDir = "";
-
     private static Set<ProjectComponent> projectComponents;
+    
+    //#endregion
 
-    public static String getPythonDir(){
-        return pythonDir;
-    }
-
+    //#region Public methods
     public static void checkInterpreter(){
         if(StringUtils.isEmpty(pythonDir)) {
            resetInterpreter();
@@ -42,24 +43,20 @@ public class ProjectProperty {
     }
 
     public static void resetInterpreter(){
-        pythonDir = getSelectedInterpreter();
+        pythonDir = chooseInterpreter();
         Notifications.Bus.notify(new Notification("util-settings", "Interpreter setting",
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
     }
 
     public static void initComponents(){
         try {
-            getComponents(projectPath);
+            resolveComponents(projectPath);
         } catch (Exception e) {
             Notifications.Bus.notify(new Notification("util-settings", "Components error", e.getMessage(), NotificationType.ERROR));
         }
     }
 
-    public static Set<ProjectComponent> getProjectComponents() {
-        return projectComponents;
-    }
-
-    public static Map<String, ProjectComponent> getComponents(String path) throws Exception{
+    public static Map<String, ProjectComponent> resolveComponents(String path) throws Exception{
         Map<String, String> versions = load(path, VERSION_FILE);
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
@@ -68,7 +65,7 @@ public class ProjectProperty {
         }
         for(String name: versions.keySet()){
             if(!StringUtils.isEmpty(versions.get(name))) {
-                String[] vB = getVersionBranch(versions.get(name));
+                String[] vB = resolveVersionBranch(versions.get(name));
                 result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1]));
             } else {
                 result.put(name, new ProjectComponent(name, "", links.get(name), ""));
@@ -79,7 +76,20 @@ public class ProjectProperty {
         }
         return result;
     }
-
+    
+    public static String[] resolveVersionBranch(String input){
+        String[] result = new String[2];
+        if(input.contains(VB_SEPARATOR)) {
+            int idx = input.indexOf(VB_SEPARATOR);
+            result[0] = input.substring(0, idx);
+            result[1] = input.substring(idx + 1);
+        } else {
+            result[0] = "";
+            result[1] = input;
+        }
+        return result;
+    }
+    
     public static Map<String, String> load(String path, String fileName) throws Exception {
         String filePath = path + File.separator + fileName;
         Map<String, String> resultMap = new HashMap<>();
@@ -91,7 +101,7 @@ public class ProjectProperty {
                     if(pair.length == 2) {
                         resultMap.put(pair[0], pair[1]);
                     } else {
-                        resultMap.put(pair[0], "");   
+                        resultMap.put(pair[0], "");
                     }
                 }
             }
@@ -105,20 +115,7 @@ public class ProjectProperty {
         }
     }
 
-    public static String[] getVersionBranch(String input){
-        String[] result = new String[2];
-        if(input.contains(VB_SEPARATOR)) {
-            int idx = input.indexOf(VB_SEPARATOR);
-            result[0] = input.substring(0, idx);
-            result[1] = input.substring(idx + 1);
-        } else {
-            result[0] = "";
-            result[1] = input;
-        }
-        return result;
-    }
-
-    private static String getSelectedInterpreter(){
+    private static String chooseInterpreter(){
         List<Sdk> pythonSdks = PythonSdkUtil.getAllSdks();
         if (pythonSdks.isEmpty()) {
             Messages.showErrorDialog("Python interpreter not found", "Python Interpreter Problem");
@@ -137,26 +134,66 @@ public class ProjectProperty {
         return Objects.requireNonNull(PythonSdkUtil.getSitePackagesDirectory(pythonSdks.get(sdkIdx))).getPath();
     }
 
-    public static List<String> getRequirements(String path){
+    public static Map<String, Pair<String, String>> resolveRequirements(String path) throws Exception{
         try(FileInputStream input = new FileInputStream(path + File.separator + "requirements.txt")){
-            return new ArrayList<>(Arrays.asList(StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n")));
+            String[] requirements = StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n"); 
+            return extractNameVersionPairs(requirements);
         } catch (IOException e) {
-            return new ArrayList<>();
+            return new HashMap<>();
         }
     }
 
-    public static Map<String, String> getPackages() throws Exception{
+    public static Map<String, Pair<String, String>> resolvePackages() throws Exception{
         Process packagesGetting = Runtime.getRuntime().exec("pip freeze");
         packagesGetting.waitFor();
         String[] packages = StringUtils.splitByWholeSeparator(new String(packagesGetting.getInputStream().readAllBytes()), "\r\n");
-        Map<String, String> result = new HashMap<>();
-        for(String pack: packages){
+        return extractNameVersionPairs(packages);
+    }
+
+    //#endregion
+    
+    //#region Private methods
+    private static Map<String, Pair<String, String>> extractNameVersionPairs(String[] strings) throws Exception{
+        Map<String, Pair<String, String>> result = new HashMap<>();
+        for(String pack: strings){
             if(!StringUtils.isEmpty(pack)) {
-                String[] pair = StringUtils.split(pack, "==");
-                result.put(pair[0], pair[1]);
+                String[] pair = resolveRequirementNameVersion(pack);
+                result.put(pair[0], new ImmutablePair<>(pair[0], pair[1]));
             }
         }
         return result;
+    }
+
+    private static String[] resolveRequirementNameVersion(String requirementWithVersion) throws Exception{
+        if(requirementWithVersion.contains("==")){
+            return StringUtils.split(requirementWithVersion, "==");
+        } else if (requirementWithVersion.contains("~=")){
+            return StringUtils.split(requirementWithVersion, "~=");
+        } else {
+            throw new Exception("Incorrect requirement " + requirementWithVersion);
+        }
+    }
+
+    //#endregion
+
+    //#region Setters
+    public static void setProjectPath(String projectPath) {
+        ProjectProperty.projectPath = projectPath;
+    }
+
+    public static void setProjectName(String projectName){
+        ProjectProperty.projectName= projectName;
+    }
+
+    //#endregion
+
+    //#region Getters
+    public static String getPythonDir(){
+        return pythonDir;
+    }
+
+    public static Set<ProjectComponent> getProjectComponents() {
+        return projectComponents;
     }
 
     public static String getProjectPath() {
@@ -171,22 +208,6 @@ public class ProjectProperty {
         return projectName;
     }
 
-    public static void setProjectPath(String projectPath) {
-        ProjectProperty.projectPath = projectPath;
-    }
-
-    public static void setProjectName(String projectName){
-        ProjectProperty.projectName= projectName;
-    }
-
-    public static String[] getRequirementNameAndVersion(String requirementWithVersion) throws Exception{
-        if(requirementWithVersion.contains("==")){
-            return org.apache.commons.lang3.StringUtils.split(requirementWithVersion, "==");
-        } else if (requirementWithVersion.contains("~=")){
-            return org.apache.commons.lang3.StringUtils.split(requirementWithVersion, "~=");
-        } else {
-            throw new Exception("Incorrect requirement " + requirementWithVersion);
-        }
-    }
+    //#endregion
 
 }
