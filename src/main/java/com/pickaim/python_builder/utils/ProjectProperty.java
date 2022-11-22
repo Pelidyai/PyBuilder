@@ -16,16 +16,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class ProjectProperty {
+    //#region Constants
     public static final String EQ_SEPARATOR = "=";
     public static final String VB_SEPARATOR = ":";
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
-
     private static final String NEXUS_NAME = "nexus_link";
+    //#endregion
 
     private static String nexusLink = "";
     private static String projectPath = "";
-
     private static String projectName = "";
     private static String pythonDir = "";
 

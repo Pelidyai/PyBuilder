@@ -22,9 +22,9 @@ public class ProjectComponent {
         }
         if (branch.equals("release") || branch.equals("versions")) {
             if(!StringUtils.isEmpty(version)) {
-                this.branch = branch + "/" + name + "/" + version;
+                this.branch = name + "/" + branch + "/" + version;
             } else {
-                this.branch = branch + "/" + name;
+                this.branch = name + "/" + branch;
             }
         } else {
             this.branch = branch;
