@@ -24,10 +24,6 @@ intellij {
 
 publishing {
     repositories {
-        /*maven {
-//            mavenLocal()
-//            url "C:\\Users\\dima-\\.m2\\repository\\"
-        }*/
         mavenLocal()
     }
 }

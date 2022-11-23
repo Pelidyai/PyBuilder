@@ -23,6 +23,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="build"/>
         <notificationGroup displayType="BALLOON" id="clean"/>
+        <notificationGroup displayType="BALLOON" id="publish"/>
         <notificationGroup displayType="BALLOON" id="util-settings"/>
         <toolWindow id="PyBuilder" factoryClass="com.pickaim.python_builder.win_factories.MyToolWindowFactory" anchor="right"/>
     </extensions>

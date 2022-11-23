@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Map;
 
 public class CleanThread extends AbstractBackgroundThread{
     public CleanThread(Project project, String title) {
@@ -22,8 +23,9 @@ public class CleanThread extends AbstractBackgroundThread{
         indicator.setText("Build");
         try {
             isAlive = true;
-            for(ProjectComponent component: ProjectProperty.getProjectComponents()){
-                String p = ProjectProperty.getPythonDir() + File.separator + component.getName();
+            Map<String, ProjectComponent> componentMap = ProjectProperty.getProjectComponents();
+            for(String componentName: componentMap.keySet()){
+                String p = ProjectProperty.getPythonDir() + File.separator + componentName;
                 if(new File(p).exists()) {
                     FileUtils.deleteDirectory(new File(p));
                 }

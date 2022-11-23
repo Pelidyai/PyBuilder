@@ -57,6 +57,7 @@ public class ProjectBuilder {
         if(!path.exists()){
             return true;
         }
+        //TODO solve this over-loading file
         String oldVersion = ProjectProperty.load(path.getPath(), ProjectProperty.VERSION_FILE).get(component.getName());
         if(oldVersion == null){
             return true;

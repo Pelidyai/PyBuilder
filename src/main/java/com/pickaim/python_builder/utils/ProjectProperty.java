@@ -31,7 +31,7 @@ public class ProjectProperty {
     private static String projectPath = "";
     private static String projectName = "";
     private static String pythonDir = "";
-    private static Set<ProjectComponent> projectComponents;
+    private static Map<String, ProjectComponent> projectComponents;
     
     //#endregion
 
@@ -72,7 +72,7 @@ public class ProjectProperty {
             }
         }
         if(path.equals(projectPath)){
-            projectComponents = new HashSet<>(result.values());
+            projectComponents = result;
         }
         return result;
     }
@@ -192,7 +192,7 @@ public class ProjectProperty {
         return pythonDir;
     }
 
-    public static Set<ProjectComponent> getProjectComponents() {
+    public static Map<String, ProjectComponent> getProjectComponents() {
         return projectComponents;
     }
 
@@ -206,6 +206,10 @@ public class ProjectProperty {
 
     public static String getProjectName() {
         return projectName;
+    }
+
+    public static ProjectComponent getCurrentComponent(){
+        return projectComponents.get(projectName);
     }
 
     //#endregion
