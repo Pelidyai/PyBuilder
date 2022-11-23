@@ -12,6 +12,9 @@ public class ProjectComponent {
     private final String link;
     private final String branch;
 
+    private static final String RELEASE_PACK_NAME = "release";
+    private static final String VERSIONS_PACK_NAME = "versions";
+
     public ProjectComponent(String name, String version, String link, String branch) {
         this.name = name;
         this.version = version;
@@ -20,7 +23,7 @@ public class ProjectComponent {
         } else {
             this.link = link;
         }
-        if (branch.equals("release") || branch.equals("versions")) {
+        if (branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME)) {
             if(!StringUtils.isEmpty(version)) {
                 this.branch = name + "/" + branch + "/" + version;
             } else {
@@ -41,6 +44,14 @@ public class ProjectComponent {
 
     public String getBranch() {
         return branch;
+    }
+
+    public String getReleaseBranch(){
+        if(!StringUtils.isEmpty(version)) {
+            return name + "/" + RELEASE_PACK_NAME + "/" + version;
+        } else {
+            return name + "/" + RELEASE_PACK_NAME;
+        }
     }
 
     public String getLink() {
