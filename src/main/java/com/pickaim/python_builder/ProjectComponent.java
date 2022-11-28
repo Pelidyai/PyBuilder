@@ -24,7 +24,7 @@ public class ProjectComponent {
             this.link = link;
         }
         if ((branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME))
-                && branch.equals(ProjectProperty.getNexusLink())) {
+                && this.link.equals(ProjectProperty.getNexusLink())) {
             if(!StringUtils.isEmpty(version)) {
                 this.branch = name + "/" + branch + "/" + version;
             } else {

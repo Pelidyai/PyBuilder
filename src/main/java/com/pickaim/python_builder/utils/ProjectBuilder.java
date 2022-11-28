@@ -23,7 +23,7 @@ public class ProjectBuilder {
             Pair<String, String> pair = requirements.get(key);
             if(!packages.containsKey(pair.getKey()) || VersionUtils.isVersionLower(packages.get(key).getValue(), pair.getValue())) {
                 indicator.setText2(subText + key);
-                Runtime.getRuntime().exec("pip install " + key).waitFor();
+                Runtime.getRuntime().exec("pip install " + key + "==" + requirements.get(key).getValue()).waitFor();
             }
             fraction += step;
             indicator.setFraction(fraction);
