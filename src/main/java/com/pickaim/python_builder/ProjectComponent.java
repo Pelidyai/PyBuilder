@@ -23,7 +23,8 @@ public class ProjectComponent {
         } else {
             this.link = link;
         }
-        if (branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME)) {
+        if ((branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME))
+                && branch.equals(ProjectProperty.getNexusLink())) {
             if(!StringUtils.isEmpty(version)) {
                 this.branch = name + "/" + branch + "/" + version;
             } else {
