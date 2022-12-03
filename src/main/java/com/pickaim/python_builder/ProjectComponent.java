@@ -1,7 +1,6 @@
 package com.pickaim.python_builder;
 
 import com.pickaim.python_builder.utils.ProjectProperty;
-import com.pickaim.python_builder.utils.VersionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -94,8 +93,8 @@ public class ProjectComponent {
         }
     }
 
-    public boolean isLower(ProjectComponent other){
-        return VersionUtils.isVersionLower(this.version, other.getVersion());
+    public boolean isNeedClone(ProjectComponent other){
+        return !this.version.equals(other.getVersion());
     }
 
 }

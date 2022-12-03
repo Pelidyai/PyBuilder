@@ -1,16 +1,17 @@
 package com.pickaim.python_builder.action_tree;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.ui.treeStructure.Tree;
 import com.intellij.openapi.project.Project;
+
 import com.pickaim.python_builder.action_tree.listeners.BuildATMouseListener;
+import com.pickaim.python_builder.action_tree.listeners.PublishATMouseListener;
+import com.pickaim.python_builder.action_tree.listeners.UtilATMouseListener;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import java.util.Arrays;
-import com.intellij.ui.treeStructure.Tree;
-import com.pickaim.python_builder.action_tree.listeners.PublishATMouseListener;
-import com.pickaim.python_builder.action_tree.listeners.UtilATMouseListener;
+
 
 public class TreeBuilder {
     public static JTree buildActionTree(Project project){
@@ -25,7 +26,6 @@ public class TreeBuilder {
         treeCellRenderer.setClosedIcon(AllIcons.Nodes.ConfigFolder);
         treeCellRenderer.setOpenIcon(AllIcons.Actions.GeneratedFolder);
 
-        System.out.println(Arrays.toString(tree.getActionMap().allKeys()));
         tree.addMouseListener(new BuildATMouseListener(tree, project));
         tree.addMouseListener(new PublishATMouseListener(tree, project));
         tree.addMouseListener(new UtilATMouseListener(tree));

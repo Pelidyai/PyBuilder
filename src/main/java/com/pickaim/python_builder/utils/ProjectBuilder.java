@@ -21,7 +21,8 @@ public class ProjectBuilder {
         Map<String, Pair<String, String>> packages = ProjectProperty.resolvePackages();
         for(String key: requirements.keySet()){
             Pair<String, String> pair = requirements.get(key);
-            if(!packages.containsKey(pair.getKey()) || VersionUtils.isVersionLower(packages.get(key).getValue(), pair.getValue())) {
+            if(!packages.containsKey(pair.getKey())
+                    || !packages.get(key).getValue().equals(pair.getValue())) {
                 indicator.setText2(subText + key);
                 Runtime.getRuntime().exec("pip install " + key + "==" + requirements.get(key).getValue()).waitFor();
             }
@@ -64,6 +65,6 @@ public class ProjectBuilder {
         }
         oldVersion = ProjectProperty.resolveVersionBranch(oldVersion)[0];
         ProjectComponent oldComponent = new ProjectComponent(component.getName(), oldVersion, component.getLink(), component.getBranch());
-        return StringUtils.isEmpty(component.getBranch()) || oldComponent.isLower(component);
+        return StringUtils.isEmpty(component.getBranch()) || oldComponent.isNeedClone(component);
     }
 }
