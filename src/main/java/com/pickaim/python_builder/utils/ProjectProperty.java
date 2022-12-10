@@ -48,7 +48,7 @@ public class ProjectProperty {
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
     }
 
-    public static void initComponents(){
+    public static void resolveComponents(){
         try {
             resolveComponents(projectPath);
         } catch (Exception e) {

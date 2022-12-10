@@ -9,6 +9,7 @@ import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.action_tree.threads.CommonPublishThread;
 import com.pickaim.python_builder.action_tree.threads.PublishThread;
 import com.pickaim.python_builder.action_tree.threads.ReleasePublishThread;
+import com.pickaim.python_builder.utils.ProjectProperty;
 
 import javax.swing.*;
 
@@ -26,6 +27,7 @@ public class PublishATMouseListener extends AbstractActionTreeMouseListener{
     @Override
     void runCommand(String command) {
         PublishThread publisher;
+        ProjectProperty.resolveComponents();
         switch (command){
             case TreeCommands.PUBLISH:{
                 publisher = commonPublishThread;
