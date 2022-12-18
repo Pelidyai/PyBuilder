@@ -45,6 +45,7 @@ public class TreeBuilder {
     private static void addPublishNode(DefaultMutableTreeNode treeRoot){
         SimpleTreeNode publishTree = new SimpleTreeNode("publishing");
         publishTree.add(new SimpleTreeNode(TreeCommands.PUBLISH));
+        publishTree.add(new SimpleTreeNode(TreeCommands.PUBLISH_RELEASE));
         treeRoot.add(publishTree);
     }
 

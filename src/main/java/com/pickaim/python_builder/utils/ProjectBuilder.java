@@ -24,7 +24,7 @@ public class ProjectBuilder {
             if(!packages.containsKey(pair.getKey())
                     || !packages.get(key).getValue().equals(pair.getValue())) {
                 indicator.setText2(subText + key);
-                Runtime.getRuntime().exec("pip install " + key + "==" + requirements.get(key).getValue()).waitFor();
+                ProcessRunner.runCommand("pip install " + key + "==" + requirements.get(key).getValue());
             }
             fraction += step;
             indicator.setFraction(fraction);

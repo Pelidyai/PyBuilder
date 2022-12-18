@@ -144,9 +144,8 @@ public class ProjectProperty {
     }
 
     public static Map<String, Pair<String, String>> resolvePackages() throws Exception{
-        Process packagesGetting = Runtime.getRuntime().exec("pip freeze");
-        packagesGetting.waitFor();
-        String[] packages = StringUtils.splitByWholeSeparator(new String(packagesGetting.getInputStream().readAllBytes()), "\r\n");
+        String processResult = ProcessRunner.runCommand("pip freeze");
+        String[] packages = StringUtils.splitByWholeSeparator(processResult, "\r\n");
         return extractNameVersionPairs(packages);
     }
 

@@ -1,5 +1,6 @@
 package com.pickaim.python_builder;
 
+import com.pickaim.python_builder.utils.ProcessRunner;
 import com.pickaim.python_builder.utils.ProjectProperty;
 import org.apache.commons.lang3.StringUtils;
 
@@ -85,12 +86,7 @@ public class ProjectComponent {
                     " " + link +
                     " " + ProjectProperty.getPythonDir() + File.separator + name;
         }
-        Process process = Runtime.getRuntime().exec(command);
-        int result = process.waitFor();
-        if(result != 0){
-            String errors = new String(process.getErrorStream().readAllBytes());
-            throw new Exception(errors);
-        }
+        ProcessRunner.runCommand(command);
     }
 
     public boolean isNeedClone(ProjectComponent other){
