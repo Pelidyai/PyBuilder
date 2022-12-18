@@ -3,6 +3,7 @@ package com.pickaim.python_builder.utils;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.NonEmptyInputValidator;
@@ -12,9 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class ProjectProperty {
@@ -24,6 +23,7 @@ public class ProjectProperty {
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
     private static final String NEXUS_NAME = "nexus_link";
+    private static final String CONFIG_FILE = "config.pickaim";
     //#endregion
 
     //#region Private fields
@@ -31,14 +31,41 @@ public class ProjectProperty {
     private static String projectPath = "";
     private static String projectName = "";
     private static String pythonDir = "";
+    private static String configPath = "";
     private static Map<String, ProjectComponent> projectComponents;
     
     //#endregion
 
     //#region Public methods
-    public static void checkInterpreter(){
-        if(StringUtils.isEmpty(pythonDir)) {
-           resetInterpreter();
+
+    public static void initProject(Project project) {
+        projectPath = project.getBasePath();
+        projectName = project.getName();
+        configPath = projectPath +
+                File.separator + ".idea" +
+                File.separator + CONFIG_FILE;
+        resolveComponents();
+    }
+    public static void checkInterpreter() {
+        try {
+            File configFile = new File(configPath);
+            if(!configFile.exists()){
+                boolean isSuccessful = configFile.createNewFile();
+                if(!isSuccessful){
+                    throw new RuntimeException("Cannot open: " + configPath);
+                }
+            }
+            if(configFile.length() != 0 && StringUtils.isEmpty(pythonDir)){
+                ObjectInputStream saveInputStream = new ObjectInputStream(
+                        new FileInputStream(configFile)
+                );
+                pythonDir = (String) saveInputStream.readObject();
+            }
+            if (StringUtils.isEmpty(pythonDir)) {
+                resetInterpreter();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -46,6 +73,15 @@ public class ProjectProperty {
         pythonDir = chooseInterpreter();
         Notifications.Bus.notify(new Notification("util-settings", "Interpreter setting",
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
+        File configFile = new File(configPath);
+        try {
+            ObjectOutputStream saveStream = new ObjectOutputStream(
+                    new FileOutputStream(configFile)
+            );
+            saveStream.writeObject(pythonDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void resolveComponents(){
@@ -177,13 +213,6 @@ public class ProjectProperty {
     //#endregion
 
     //#region Setters
-    public static void setProjectPath(String projectPath) {
-        ProjectProperty.projectPath = projectPath;
-    }
-
-    public static void setProjectName(String projectName){
-        ProjectProperty.projectName= projectName;
-    }
 
     //#endregion
 
