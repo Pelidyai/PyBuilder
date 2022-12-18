@@ -68,16 +68,16 @@ To find loaded dependencies open *python_interpreter_path/Libs/site-packages*.
 This task remove all loaded dependencies which are specified in properties files.
 ### Publish
 #### publish
-This task push your current commits and changes to remote repository of this project or specified nexus.
+This task push only your current **commits** to remote repository of this project or specified nexus.
 
-_Current project will be published to branch or directory which are specified in version.properties_ 
+***Current project will be published to branch or directory which are specified in version.properties*** 
 [version.properties](#versionproperties)
 
 #### publishToLocal
-This task copy current project to your local interpreter site-packages path.
+This task copy current project to your local interpreter site-packages path. **This task also copy your local changes.**
 
 #### publishToRelease
-This task push your current commits and changes to release-breaches. 
+This task push only your current **commits** to release-breaches. 
 **It can create new release-branches on remote repository.**
 ### Utils
 #### resetInterpreter
