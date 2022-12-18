@@ -51,6 +51,7 @@ public class ProjectProperty {
     public static void resolveComponents(){
         try {
             resolveComponents(projectPath);
+            checkInterpreter();
         } catch (Exception e) {
             Notifications.Bus.notify(new Notification("util-settings", "Components error", e.getMessage(), NotificationType.ERROR));
         }
