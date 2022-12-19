@@ -13,6 +13,7 @@ public class UtilATMouseListener extends AbstractActionTreeMouseListener{
 
     @Override
     void runCommand(String command) {
+        ProjectProperty.resolveComponents();
         switch (command){
             case TreeCommands.INTERPRETER:{
                 ProjectProperty.resetInterpreter();
