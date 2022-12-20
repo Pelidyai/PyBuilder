@@ -65,32 +65,20 @@ public class PublishThread extends AbstractBackgroundThread {
             );
             throw new Exception("Publishing to existing version.");
         }
-        File localVersionFile = new File(projectPath + File.separator + ProjectProperty.VERSION_FILE);
-        File ideaVersionFile = new File(projectPath + File.separator + "./idea" + File.separator + ProjectProperty.VERSION_FILE);
-        File localLinkFile = new File(projectPath + File.separator + ProjectProperty.LINK_FILE);
-        File ideaLinkFile = new File(projectPath + File.separator + "./idea" + File.separator + ProjectProperty.LINK_FILE);
-        FileUtils.copyFile(localVersionFile, ideaVersionFile);
-        FileUtils.copyFile(localLinkFile, ideaLinkFile);
+
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
                 " & " + "git stash push" +
                 " && " + "git switch -c " + branch + " nexus/master" +
-                " && " + "git checkout master ."
-        );
-        FileUtils.copyFile(ideaVersionFile, localVersionFile);
-        FileUtils.copyFile(ideaLinkFile, localLinkFile);
-        if(!ideaVersionFile.delete()){
-            System.out.println("LOG: can not delete version idea file.");
-        }
-        if(!ideaLinkFile.delete()){
-            System.out.println("LOG: can not delete link idea file.");
-        }
-        ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
+                " && " + "git checkout master ." +
                 " && " + "git add ." +
                 " && " + "git commit -m \"Publishing\"" +
                 " && " + "git push --force " + link +
                 " & " + "git checkout -f " + savedBranch +
                 " & " + "git branch -D " + branch +
-                " & " + "git stash pop" +
+                " & " + "git stash pop"
+        );
+
+        ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
                 " && " + "git remote remove nexus"
         );
     }
