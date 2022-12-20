@@ -8,12 +8,10 @@ import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProcessRunner;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
