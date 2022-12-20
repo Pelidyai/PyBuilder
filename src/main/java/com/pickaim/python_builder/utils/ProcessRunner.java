@@ -5,7 +5,7 @@ public class ProcessRunner {
         process.waitFor();
         String errors = new String(process.getErrorStream().readAllBytes());
         String output = new String(process.getInputStream().readAllBytes());
-        if(process.exitValue() != 0 && !errors.isEmpty()){
+        if(process.exitValue() != 0 && !errors.isEmpty() && !errors.contains("No stash entries found")){
             throw new Exception(errors);
         }
         return output;
