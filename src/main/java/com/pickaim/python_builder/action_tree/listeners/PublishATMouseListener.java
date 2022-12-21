@@ -1,10 +1,14 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
+import com.intellij.ide.SaveAndSyncHandler;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.progress.impl.ProgressManagerImpl;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.action_tree.threads.CommonPublishThread;
 import com.pickaim.python_builder.action_tree.threads.LocalPublishThread;
@@ -31,6 +35,12 @@ public class PublishATMouseListener extends AbstractActionTreeMouseListener{
     void runCommand(String command) {
         PublishThread publisher;
         ProjectProperty.resolveComponents();
+        FileDocumentManager documentManager = FileDocumentManager.getInstance();
+        for(Document unsavedDoc: documentManager.getUnsavedDocuments()){
+            documentManager.saveDocument(unsavedDoc);
+        }
+        SaveAndSyncHandler.getInstance().refreshOpenFiles();
+        VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
         switch (command){
             case TreeCommands.PUBLISH:{
                 publisher = commonPublishThread;

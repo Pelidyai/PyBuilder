@@ -24,5 +24,4 @@ public class LocalPublishThread extends PublishThread{
                 new File(targetPath)
         );
     }
-
 }
