@@ -68,7 +68,7 @@ public class PublishThread extends AbstractBackgroundThread {
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
                 " & " + "git stash push" +
                 " && " + "git switch -c " + branch + " nexus/master" +
-                " && " + "git checkout master ." +
+                " && " + "git checkout " + savedBranch + " ." +
                 " && " + "git add ." +
                 " && " + "git commit -m \"Publishing\"" +
                 " && " + "git push --force " + link +
