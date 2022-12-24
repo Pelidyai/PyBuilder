@@ -28,7 +28,7 @@ public class TreeBuilder {
 
         tree.addMouseListener(new BuildATMouseListener(tree, project));
         tree.addMouseListener(new PublishATMouseListener(tree, project));
-        tree.addMouseListener(new UtilATMouseListener(tree));
+        tree.addMouseListener(new UtilATMouseListener(tree, project));
         tree.setVisible(true);
         tree.setCellRenderer(treeCellRenderer);
 

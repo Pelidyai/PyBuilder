@@ -12,9 +12,9 @@ public class CommonPublishThread extends PublishThread{
     }
 
     protected void publish() throws Exception {
-        ProjectComponent currentComponent = ProjectProperty.getCurrentComponent();
+        ProjectComponent currentComponent = ProjectProperty.getInstance(myProject).getCurrentComponent();
         if (currentComponent != null) {
-            publishToBranch(currentComponent.getBranch(), ProjectProperty.getNexusLink());
+            publishToBranch(currentComponent.getBranch(), currentComponent.getLink());
         } else {
             throw new Exception("Cannot find project component publishing info");
         }

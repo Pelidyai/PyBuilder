@@ -20,7 +20,7 @@ public class MyToolWindowFactory implements ToolWindowFactory {
     }
 
     private void init(Project project){
-        ProjectProperty.initProject(project);
+        ProjectProperty.getInstance(project).update();
     }
 
 }

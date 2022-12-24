@@ -1,5 +1,6 @@
 package com.pickaim.python_builder;
 
+import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProcessRunner;
 import com.pickaim.python_builder.utils.ProjectProperty;
 import org.apache.commons.lang3.StringUtils;
@@ -11,20 +12,22 @@ public class ProjectComponent {
     private final String version;
     private final String link;
     private final String branch;
+    private final Project project;
 
     private static final String RELEASE_PACK_NAME = "release";
     private static final String VERSIONS_PACK_NAME = "versions";
 
-    public ProjectComponent(String name, String version, String link, String branch) {
+    public ProjectComponent(String name, String version, String link, String branch, Project project) {
         this.name = name;
         this.version = version;
+        this.project = project;
         if(StringUtils.isEmpty(link)){
-            this.link = ProjectProperty.getNexusLink();
+            this.link = ProjectProperty.getInstance(project).getNexusLink();
         } else {
             this.link = link;
         }
         if ((branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME))
-                && this.link.equals(ProjectProperty.getNexusLink())) {
+                && this.link.equals(ProjectProperty.getInstance(project).getNexusLink())) {
             if(!StringUtils.isEmpty(version)) {
                 this.branch = name + "/" + branch + "/" + version;
             } else {
@@ -80,11 +83,11 @@ public class ProjectComponent {
         if(StringUtils.isEmpty(branch)){
             command = "git clone" +
                     " " + link +
-                    " " + ProjectProperty.getPythonDir() + File.separator + name;
+                    " " + ProjectProperty.getInstance(project).getPythonDir() + File.separator + name;
         } else {
             command = "git clone --branch " + branch +
                     " " + link +
-                    " " + ProjectProperty.getPythonDir() + File.separator + name;
+                    " " + ProjectProperty.getInstance(project).getPythonDir() + File.separator + name;
         }
         ProcessRunner.runCommand(command);
     }

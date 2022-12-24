@@ -31,26 +31,34 @@ public class ProjectProperty {
     //#endregion
 
     //#region Private fields
-    private static String nexusLink = "";
-    private static String projectPath = "";
-    private static String projectName = "";
-    private static String pythonDir = "";
-    private static String configPath = "";
-    private static Map<String, ProjectComponent> projectComponents;
-    
+    private String nexusLink = "";
+    private String pythonDir;
+    private Map<String, ProjectComponent> projectComponents;
+    private final Project project;
+    private final String projectName;
+    private final String configPath;
+    private final String projectPath;
+    private static final Map<Project, ProjectProperty> propertiesMap = new HashMap<>();
     //#endregion
 
     //#region Public methods
+    public static ProjectProperty getInstance(Project project){
+        if(!propertiesMap.containsKey(project)){
+            propertiesMap.put(project, new ProjectProperty(project));
+        }
+        return propertiesMap.get(project);
+    }
 
-    public static void initProject(Project project) {
+    private ProjectProperty(Project project){
+        this.project = project;
         projectPath = project.getBasePath();
         projectName = project.getName();
         configPath = projectPath +
                 File.separator + ".idea" +
                 File.separator + CONFIG_FILE;
-        resolveComponents();
     }
-    public static void checkInterpreter() {
+
+    public void checkInterpreter() {
         try {
             File configFile = new File(configPath);
             if(!configFile.exists()){
@@ -73,7 +81,7 @@ public class ProjectProperty {
         }
     }
 
-    public static void resetInterpreter(){
+    public void resetInterpreter(){
         pythonDir = chooseInterpreter();
         Notifications.Bus.notify(new Notification("util-settings", "Interpreter setting",
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
@@ -88,32 +96,26 @@ public class ProjectProperty {
         }
     }
 
-    public static void resolveComponents(){
+    public void update(){
         try {
-            resolveComponents(projectPath);
+            updateMe();
             checkInterpreter();
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification("util-settings", "Components error", e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new Notification("util-settings", "Update error", e.getMessage(), NotificationType.ERROR));
         }
     }
 
-    public static Map<String, ProjectComponent> resolveComponents(String path) throws Exception{
+    public static Map<String, ProjectComponent> resolveComponents(String path, Project project){
         Map<String, String> versions = load(path, VERSION_FILE);
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
-        if(StringUtils.isEmpty(nexusLink)) {
-            nexusLink = links.get(NEXUS_NAME);
-        }
         for(String name: versions.keySet()){
             if(!StringUtils.isEmpty(versions.get(name))) {
                 String[] vB = resolveVersionBranch(versions.get(name));
-                result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1]));
+                result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1], project));
             } else {
-                result.put(name, new ProjectComponent(name, "", links.get(name), ""));
+                result.put(name, new ProjectComponent(name, "", links.get(name), "", project));
             }
-        }
-        if(path.equals(projectPath)){
-            projectComponents = result;
         }
         return result;
     }
@@ -131,15 +133,15 @@ public class ProjectProperty {
         return result;
     }
     
-    public static Map<String, String> load(String path, String fileName) throws Exception {
+    public static Map<String, String> load(String path, String fileName) {
         String filePath = path + File.separator + fileName;
         Map<String, String> resultMap = new HashMap<>();
         try (FileInputStream fileInput = new FileInputStream(filePath)) {
             String[] lines = StringUtils.splitByWholeSeparator(new String(fileInput.readAllBytes()), "\r\n");
-            for(String line: lines){
-                if(!StringUtils.isEmpty(line)){
+            for (String line : lines) {
+                if (!StringUtils.isEmpty(line)) {
                     String[] pair = StringUtils.split(line, EQ_SEPARATOR);
-                    if(pair.length == 2) {
+                    if (pair.length == 2) {
                         resultMap.put(pair[0], pair[1]);
                     } else {
                         resultMap.put(pair[0], "");
@@ -147,12 +149,8 @@ public class ProjectProperty {
                 }
             }
             return resultMap;
-        } catch (IOException e){
-            if(projectPath.equals(path)) {
-                throw new Exception("IOException with" + filePath + "file");
-            } else {
-                return resultMap;
-            }
+        } catch (IOException e) {
+            return resultMap;
         }
     }
 
@@ -201,6 +199,12 @@ public class ProjectProperty {
     //#endregion
     
     //#region Private methods
+    private void updateMe(){
+        Map<String, String> links = load(projectPath, LINK_FILE);
+        nexusLink = links.get(NEXUS_NAME);
+        projectComponents = resolveComponents(projectPath, project);
+    }
+
     private static Map<String, Pair<String, String>> extractNameVersionPairs(String[] strings) throws Exception{
         Map<String, Pair<String, String>> result = new HashMap<>();
         for(String pack: strings){
@@ -229,27 +233,27 @@ public class ProjectProperty {
     //#endregion
 
     //#region Getters
-    public static String getPythonDir(){
+    public String getPythonDir(){
         return pythonDir;
     }
 
-    public static Map<String, ProjectComponent> getProjectComponents() {
+    public Map<String, ProjectComponent> getProjectComponents() {
         return projectComponents;
     }
 
-    public static String getProjectPath() {
+    public String getProjectPath() {
         return projectPath;
     }
 
-    public static String getNexusLink(){
+    public String getNexusLink(){
         return nexusLink;
     }
 
-    public static String getProjectName() {
+    public String getProjectName() {
         return projectName;
     }
 
-    public static ProjectComponent getCurrentComponent(){
+    public ProjectComponent getCurrentComponent(){
         return projectComponents.get(projectName);
     }
 

@@ -13,9 +13,9 @@ public class ReleasePublishThread extends PublishThread{
 
     @Override
     protected void publish() throws Exception {
-        ProjectComponent currentComponent = ProjectProperty.getCurrentComponent();
+        ProjectComponent currentComponent = ProjectProperty.getInstance(myProject).getCurrentComponent();
         if (currentComponent != null) {
-            publishToBranch(currentComponent.getReleaseBranch(), ProjectProperty.getNexusLink());
+            publishToBranch(currentComponent.getReleaseBranch(), currentComponent.getLink());
         } else {
             throw new Exception("Cannot find project component publishing info");
         }

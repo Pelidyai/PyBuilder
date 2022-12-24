@@ -23,9 +23,9 @@ public class CleanThread extends AbstractBackgroundThread{
         indicator.setText("Build");
         try {
             isAlive = true;
-            Map<String, ProjectComponent> componentMap = ProjectProperty.getProjectComponents();
+            Map<String, ProjectComponent> componentMap = ProjectProperty.getInstance(myProject).getProjectComponents();
             for(String componentName: componentMap.keySet()){
-                String p = ProjectProperty.getPythonDir() + File.separator + componentName;
+                String p = ProjectProperty.getInstance(myProject).getPythonDir() + File.separator + componentName;
                 if(new File(p).exists()) {
                     FileUtils.deleteDirectory(new File(p));
                 }

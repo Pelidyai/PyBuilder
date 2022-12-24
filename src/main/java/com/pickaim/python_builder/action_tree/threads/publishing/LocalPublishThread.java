@@ -15,12 +15,13 @@ public class LocalPublishThread extends PublishThread{
 
     @Override
     protected void publish() throws Exception{
-        String targetPath = ProjectProperty.getPythonDir() + File.separator + ProjectProperty.getProjectName();
+        String targetPath = ProjectProperty.getInstance(myProject).getPythonDir()
+                + File.separator + ProjectProperty.getInstance(myProject).getProjectName();
         FileUtils.deleteDirectory(
                 new File(targetPath)
         );
         FileUtils.copyDirectory(
-                new File(ProjectProperty.getProjectPath()),
+                new File(ProjectProperty.getInstance(myProject).getProjectPath()),
                 new File(targetPath)
         );
     }

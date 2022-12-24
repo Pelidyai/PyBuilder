@@ -43,10 +43,9 @@ public class PublishThread extends AbstractBackgroundThread {
     }
 
     protected void publishToBranch(String branch, String link) throws Exception {
-        String projectPath = ProjectProperty.getProjectPath();
-        //TODO remote - commits, local - commits + changes
+        String projectPath = ProjectProperty.getInstance(myProject).getProjectPath();
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
-                " && " + "git remote add nexus " + ProjectProperty.getNexusLink() +
+                " && " + "git remote add nexus " + ProjectProperty.getInstance(myProject).getNexusLink() +
                 " && " + "git remote update");
         String savedBranch = ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
                 " && " + "git rev-parse --abbrev-ref HEAD"

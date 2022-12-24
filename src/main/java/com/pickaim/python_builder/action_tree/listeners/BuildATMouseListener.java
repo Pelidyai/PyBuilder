@@ -17,7 +17,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
     private final CleanThread cleanThread;
 
     public BuildATMouseListener(JTree tree, Project project){
-        super(tree);
+        super(tree, project);
         this.buildThread = new BuildThread(project, "Build process");
         this.cleanThread = new CleanThread(project, "Clean process");
     }
@@ -42,7 +42,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
 
     private void build(){
         if (!buildThread.isAlive()) {
-            ProjectProperty.checkInterpreter();
+            ProjectProperty.getInstance(buildThread.getProject()).checkInterpreter();
             new ProgressManagerImpl().run(buildThread);
         } else {
             Notifications.Bus.notify(new Notification("build", "Build process",
@@ -52,7 +52,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
 
     private void clean(){
         if (!cleanThread.isAlive()) {
-            ProjectProperty.checkInterpreter();
+            ProjectProperty.getInstance(cleanThread.getProject()).checkInterpreter();
             new ProgressManagerImpl().run(cleanThread);
         } else {
             Notifications.Bus.notify(new Notification("clean", "Clean process",

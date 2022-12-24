@@ -20,7 +20,7 @@ public class PublishATMouseListener extends AbstractActionTreeMouseListener{
     private final ReleasePublishThread releasePublishThread;
 
     public PublishATMouseListener(JTree tree, Project project) {
-        super(tree);
+        super(tree, project);
         this.commonPublishThread = new CommonPublishThread(project, "Publish process");
         this.localPublishThread = new LocalPublishThread(project, "Publish to local process");
         this.releasePublishThread = new ReleasePublishThread(project, "Publish release process");

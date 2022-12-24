@@ -1,5 +1,6 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
+import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
@@ -7,8 +8,8 @@ import javax.swing.*;
 
 public class UtilATMouseListener extends AbstractActionTreeMouseListener{
 
-    public UtilATMouseListener(JTree tree) {
-        super(tree);
+    public UtilATMouseListener(JTree tree, Project project) {
+        super(tree, project);
     }
 
     @Override
@@ -16,7 +17,7 @@ public class UtilATMouseListener extends AbstractActionTreeMouseListener{
         super.runCommand(command);
         switch (command){
             case TreeCommands.INTERPRETER:{
-                ProjectProperty.resetInterpreter();
+                ProjectProperty.getInstance(project).resetInterpreter();
                 break;
             }
             default:{

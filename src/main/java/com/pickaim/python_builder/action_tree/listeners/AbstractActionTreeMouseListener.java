@@ -1,5 +1,6 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
+import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
 import javax.swing.*;
@@ -10,8 +11,11 @@ import java.awt.event.MouseListener;
 public abstract class AbstractActionTreeMouseListener implements MouseListener {
     private final JTree tree;
 
-    public AbstractActionTreeMouseListener(JTree tree) {
+    protected final Project project;
+
+    public AbstractActionTreeMouseListener(JTree tree, Project project) {
         this.tree = tree;
+        this.project = project;
     }
 
     @Override
@@ -48,7 +52,7 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
     }
 
     void runCommand(String command){
-        ProjectProperty.resolveComponents();
+        ProjectProperty.getInstance(project).update();
         ProjectProperty.saveChanges();
     }
 }
