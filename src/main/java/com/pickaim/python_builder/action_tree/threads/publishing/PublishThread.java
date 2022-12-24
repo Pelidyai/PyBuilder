@@ -1,10 +1,11 @@
-package com.pickaim.python_builder.action_tree.threads;
+package com.pickaim.python_builder.action_tree.threads.publishing;
 
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
+import com.pickaim.python_builder.action_tree.threads.AbstractBackgroundThread;
 import com.pickaim.python_builder.utils.ProcessRunner;
 import com.pickaim.python_builder.utils.ProjectProperty;
 

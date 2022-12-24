@@ -24,7 +24,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
 
     @Override
     protected void runCommand(String command){
-        ProjectProperty.resolveComponents();
+        super.runCommand(command);
         switch (command){
             case TreeCommands.BUILD:{
                 build();

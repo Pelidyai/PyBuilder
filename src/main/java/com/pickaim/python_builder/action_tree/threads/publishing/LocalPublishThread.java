@@ -1,4 +1,4 @@
-package com.pickaim.python_builder.action_tree.threads;
+package com.pickaim.python_builder.action_tree.threads.publishing;
 
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProjectProperty;

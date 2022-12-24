@@ -1,12 +1,16 @@
 package com.pickaim.python_builder.utils;
 
+import com.intellij.ide.SaveAndSyncHandler;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.NonEmptyInputValidator;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.lang.StringUtils;
@@ -186,6 +190,14 @@ public class ProjectProperty {
         return extractNameVersionPairs(packages);
     }
 
+    public static void saveChanges(){
+        FileDocumentManager documentManager = FileDocumentManager.getInstance();
+        for(Document unsavedDoc: documentManager.getUnsavedDocuments()){
+            documentManager.saveDocument(unsavedDoc);
+        }
+        SaveAndSyncHandler.getInstance().refreshOpenFiles();
+        VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
+    }
     //#endregion
     
     //#region Private methods

@@ -1,5 +1,7 @@
 package com.pickaim.python_builder.action_tree.listeners;
 
+import com.pickaim.python_builder.utils.ProjectProperty;
+
 import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseEvent;
@@ -45,5 +47,8 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
         // override if necessary
     }
 
-    abstract void runCommand(String command);
+    void runCommand(String command){
+        ProjectProperty.resolveComponents();
+        ProjectProperty.saveChanges();
+    }
 }
