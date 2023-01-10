@@ -24,5 +24,15 @@ public class LocalPublishThread extends PublishThread{
                 new File(ProjectProperty.getInstance(myProject).getProjectPath()),
                 new File(targetPath)
         );
+
+        File innerSrcDir = new File(ProjectProperty.getInstance(myProject).getPythonDir() +
+                File.separator + ProjectProperty.getInstance(myProject).getProjectName() +
+                File.separator + ProjectProperty.getInstance(myProject).getProjectName());
+        FileUtils.copyDirectory(
+                innerSrcDir,
+                new File(ProjectProperty.getInstance(myProject).getPythonDir()
+                        + File.separator +  ProjectProperty.getInstance(myProject).getProjectName())
+        );
+        FileUtils.deleteDirectory(innerSrcDir);
     }
 }
