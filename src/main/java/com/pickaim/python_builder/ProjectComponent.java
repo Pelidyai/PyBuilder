@@ -3,6 +3,7 @@ package com.pickaim.python_builder;
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.utils.ProcessRunner;
 import com.pickaim.python_builder.utils.ProjectProperty;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -90,6 +91,14 @@ public class ProjectComponent {
                     " " + ProjectProperty.getInstance(project).getPythonDir() + File.separator + name;
         }
         ProcessRunner.runCommand(command);
+        File innerSrcDir = new File(ProjectProperty.getInstance(project).getPythonDir() +
+                File.separator + name +
+                File.separator + name);
+        FileUtils.copyDirectory(
+                innerSrcDir,
+                new File(ProjectProperty.getInstance(project).getPythonDir() + File.separator + name)
+        );
+        FileUtils.deleteDirectory(innerSrcDir);
     }
 
     public boolean isNeedClone(ProjectComponent other){
