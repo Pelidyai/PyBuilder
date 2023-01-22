@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -16,25 +15,10 @@ public class ProjectBuilder {
     public static void buildProject(String projectPath, ProgressIndicator indicator, Project project) throws Exception{
         ProjectProperty property = ProjectProperty.getInstance(project);
         Map<String, ProjectComponent> componentMap = ProjectProperty.resolveComponents(projectPath, project);
-        Map<String, Pair<String, String>> requirements = ProjectProperty.resolveRequirements(projectPath);
-        double fraction = 0.0;
-        double step = 1.0 / requirements.size();
-        String subText = "Loading requirement: ";
-        Map<String, Pair<String, String>> packages = ProjectProperty.resolvePackages();
-        for(String key: requirements.keySet()){
-            Pair<String, String> pair = requirements.get(key);
-            if(!packages.containsKey(pair.getKey())
-                    || !packages.get(key).getValue().equals(pair.getValue())) {
-                indicator.setText2(subText + key);
-                ProcessRunner.runCommand("pip install " + key + "==" + requirements.get(key).getValue());
-            }
-            fraction += step;
-            indicator.setFraction(fraction);
-        }
         indicator.setFraction(0.0);
-        fraction = 0.0;
-        step = 1.0 / (componentMap.size() - 1);
-        subText = "Loading artifact: ";
+        double fraction = 0.0;
+        double step = 1.0 / componentMap.size();
+        String subText = "Loading artifact: ";
         for(String name: componentMap.keySet()) {
             indicator.setText2(subText + name);
             ProjectComponent component = componentMap.get(name);

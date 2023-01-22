@@ -14,8 +14,6 @@ import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jetbrains.python.sdk.PythonSdkUtil;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.io.*;
 import java.util.*;
@@ -173,20 +171,6 @@ public class ProjectProperty {
         return Objects.requireNonNull(PythonSdkUtil.getSitePackagesDirectory(pythonSdks.get(sdkIdx))).getPath();
     }
 
-    public static Map<String, Pair<String, String>> resolveRequirements(String path) throws Exception{
-        try(FileInputStream input = new FileInputStream(path + File.separator + "requirements.txt")){
-            String[] requirements = StringUtils.splitByWholeSeparator(new String(input.readAllBytes()), "\r\n"); 
-            return extractNameVersionPairs(requirements);
-        } catch (IOException e) {
-            return new HashMap<>();
-        }
-    }
-
-    public static Map<String, Pair<String, String>> resolvePackages() throws Exception{
-        String processResult = ProcessRunner.runCommand("pip freeze");
-        String[] packages = StringUtils.splitByWholeSeparator(processResult, "\r\n");
-        return extractNameVersionPairs(packages);
-    }
 
     public static void saveChanges(){
         FileDocumentManager documentManager = FileDocumentManager.getInstance();
@@ -203,27 +187,6 @@ public class ProjectProperty {
         Map<String, String> links = load(projectPath, LINK_FILE);
         nexusLink = links.get(NEXUS_NAME);
         projectComponents = resolveComponents(projectPath, project);
-    }
-
-    private static Map<String, Pair<String, String>> extractNameVersionPairs(String[] strings) throws Exception{
-        Map<String, Pair<String, String>> result = new HashMap<>();
-        for(String pack: strings){
-            if(!StringUtils.isEmpty(pack)) {
-                String[] pair = resolveRequirementNameVersion(pack);
-                result.put(pair[0], new ImmutablePair<>(pair[0], pair[1]));
-            }
-        }
-        return result;
-    }
-
-    private static String[] resolveRequirementNameVersion(String requirementWithVersion) throws Exception{
-        if(requirementWithVersion.contains("==")){
-            return StringUtils.split(requirementWithVersion, "==");
-        } else if (requirementWithVersion.contains("~=")){
-            return StringUtils.split(requirementWithVersion, "~=");
-        } else {
-            throw new Exception("Incorrect requirement " + requirementWithVersion);
-        }
     }
 
     //#endregion
