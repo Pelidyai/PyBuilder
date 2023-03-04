@@ -40,12 +40,12 @@ public class ProjectBuilder {
         if(component.getName().equals(ProjectProperty.getInstance(project).getProjectName())){
             return false;
         }
-        File path = new File(ProjectProperty.getInstance(project).getPythonDir() + File.separator + component.getName());
-        if(!path.exists()){
+        File existingComponentPath = new File(ProjectProperty.getInstance(project).getPythonDir() + File.separator + component.getName());
+        if(!existingComponentPath.exists()){
             return true;
         }
         //TODO solve this over-loading file
-        String oldVersion = ProjectProperty.load(path.getPath(), ProjectProperty.VERSION_FILE).get(component.getName());
+        String oldVersion = ProjectProperty.load(existingComponentPath.getPath(), ProjectProperty.VERSION_FILE).get(component.getName());
         if(oldVersion == null){
             return true;
         }

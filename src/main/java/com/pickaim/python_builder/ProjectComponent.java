@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.Map;
 
 public class ProjectComponent {
     private final String name;
@@ -102,7 +103,14 @@ public class ProjectComponent {
     }
 
     public boolean isNeedClone(ProjectComponent other){
+        Map<String, ProjectComponent> projectComponentMap = ProjectProperty.getInstance(project).getProjectComponents();
+        ProjectComponent hardcodedComponent = projectComponentMap.get(this.getName());
+        if(hardcodedComponent == null){
+            return true;
+        }
+        if(this.version.equals(hardcodedComponent.version)){
+            return false;
+        }
         return !this.version.equals(other.getVersion());
     }
-
 }
