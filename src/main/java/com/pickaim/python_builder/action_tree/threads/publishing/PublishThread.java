@@ -57,27 +57,31 @@ public class PublishThread extends AbstractBackgroundThread {
                 .filter(remoteBranch -> remoteBranch.startsWith("  nexus"))
                 .map(String::trim)
                 .collect(Collectors.toSet());
-        if (remoteBranches.contains("nexus/" + branch)) {
-            ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
-                    " && " + "git remote remove nexus"
-            );
-            throw new Exception("Publishing to existing version.");
-        }
 
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
-                " & " + "git stash push" +
+                " && " + "git stash push" +
                 " && " + "git switch -c " + branch + " nexus/master" +
                 " && " + "git checkout " + savedBranch + " ." +
-                " && " + "git add ." +
-                " && " + "git commit -m \"Publishing\"" +
-                " && " + "git push --force " + link +
-                " & " + "git checkout -f " + savedBranch +
-                " & " + "git branch -D " + branch +
-                " & " + "git stash pop"
+                " && " + "git add ."
         );
 
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
                 " && " + "git remote remove nexus"
+        );
+
+        if (remoteBranches.contains("nexus/" + branch)) {
+            throw new Exception("Publishing to existing version.");
+        }
+
+        ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
+                " && " + "git commit -m \"Publishing\""
+        , 10); // timeout for extremely slow commit cases
+
+        ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
+                " & " + "git push --force " + link +
+                " & " + "git checkout -f " + savedBranch +
+                " & " + "git branch -D " + branch +
+                " && " + "git stash pop"
         );
     }
 }
