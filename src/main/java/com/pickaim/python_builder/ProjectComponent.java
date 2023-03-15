@@ -102,11 +102,11 @@ public class ProjectComponent {
         FileUtils.deleteDirectory(innerSrcDir);
     }
 
-    public boolean isNeedClone(ProjectComponent other){
+    public boolean isNeedClone(ProjectComponent other, boolean isExistingPath){
         Map<String, ProjectComponent> projectComponentMap = ProjectProperty.getInstance(project).getProjectComponents();
         ProjectComponent hardcodedComponent = projectComponentMap.get(this.getName());
         if(hardcodedComponent == null){
-            return true;
+            return !this.version.equals(other.getVersion()) && !isExistingPath;
         }
         if(this.version.equals(hardcodedComponent.version)){
             return false;

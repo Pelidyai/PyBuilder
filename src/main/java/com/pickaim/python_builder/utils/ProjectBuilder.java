@@ -51,6 +51,6 @@ public class ProjectBuilder {
         }
         oldVersion = ProjectProperty.resolveVersionBranch(oldVersion)[0];
         ProjectComponent oldComponent = new ProjectComponent(component.getName(), oldVersion, component.getLink(), component.getBranch(), project);
-        return StringUtils.isEmpty(component.getBranch()) || oldComponent.isNeedClone(component);
+        return StringUtils.isEmpty(component.getBranch()) || oldComponent.isNeedClone(component, existingComponentPath.exists());
     }
 }
