@@ -22,7 +22,7 @@ public class BuildThread extends AbstractBackgroundThread {
         try {
             isAlive = true;
             ProjectBuilder.buildProject(ProjectProperty.getInstance(myProject).getProjectPath(),
-                    indicator, myProject);
+                    indicator, myProject, ProjectProperty.getInstance(myProject).getProjectName());
             isAlive = false;
             Notifications.Bus.notify(new Notification("build", "Build results",
                     "Build successful", NotificationType.INFORMATION));

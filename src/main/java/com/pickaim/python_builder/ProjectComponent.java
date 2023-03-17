@@ -23,14 +23,14 @@ public class ProjectComponent {
         this.name = name;
         this.version = version;
         this.project = project;
-        if(StringUtils.isEmpty(link)){
+        if (StringUtils.isEmpty(link)) {
             this.link = ProjectProperty.getInstance(project).getNexusLink();
         } else {
             this.link = link;
         }
         if ((branch.equals(RELEASE_PACK_NAME) || branch.equals(VERSIONS_PACK_NAME))
                 && this.link.equals(ProjectProperty.getInstance(project).getNexusLink())) {
-            if(!StringUtils.isEmpty(version)) {
+            if (!StringUtils.isEmpty(version)) {
                 this.branch = name + "/" + branch + "/" + version;
             } else {
                 this.branch = name + "/" + branch;
@@ -40,11 +40,11 @@ public class ProjectComponent {
         }
     }
 
-    public String getName(){
+    public String getName() {
         return name;
     }
 
-    public String getVersion(){
+    public String getVersion() {
         return version;
     }
 
@@ -52,8 +52,8 @@ public class ProjectComponent {
         return branch;
     }
 
-    public String getReleaseBranch(){
-        if(!StringUtils.isEmpty(version)) {
+    public String getReleaseBranch() {
+        if (!StringUtils.isEmpty(version)) {
             return name + "/" + RELEASE_PACK_NAME + "/" + version;
         } else {
             return name + "/" + RELEASE_PACK_NAME;
@@ -65,14 +65,14 @@ public class ProjectComponent {
     }
 
     @Override
-    public int hashCode(){
+    public int hashCode() {
         return name.hashCode() + version.hashCode()
                 + link.hashCode() + branch.hashCode();
     }
 
     @Override
-    public boolean equals(Object obj){
-        if(!(obj instanceof ProjectComponent))
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ProjectComponent))
             return false;
         ProjectComponent other = (ProjectComponent) obj;
         return other.getLink().equals(this.link)
@@ -80,9 +80,9 @@ public class ProjectComponent {
                 && other.getBranch().equals(this.branch);
     }
 
-    public void cloning() throws Exception{
+    public void cloning() throws Exception {
         String command;
-        if(StringUtils.isEmpty(branch)){
+        if (StringUtils.isEmpty(branch)) {
             command = "git clone" +
                     " " + link +
                     " " + ProjectProperty.getInstance(project).getPythonDir() + File.separator + name;
@@ -102,13 +102,13 @@ public class ProjectComponent {
         FileUtils.deleteDirectory(innerSrcDir);
     }
 
-    public boolean isNeedClone(ProjectComponent other, boolean isExistingPath){
+    public boolean isNeedClone(ProjectComponent other) {
         Map<String, ProjectComponent> projectComponentMap = ProjectProperty.getInstance(project).getProjectComponents();
         ProjectComponent hardcodedComponent = projectComponentMap.get(this.getName());
-        if(hardcodedComponent == null){
-            return !this.version.equals(other.getVersion()) && !isExistingPath;
+        if (hardcodedComponent == null) {
+            return !this.version.equals(other.getVersion());
         }
-        if(this.version.equals(hardcodedComponent.version)){
+        if (this.version.equals(hardcodedComponent.version)) {
             return false;
         }
         return !this.version.equals(other.getVersion());
