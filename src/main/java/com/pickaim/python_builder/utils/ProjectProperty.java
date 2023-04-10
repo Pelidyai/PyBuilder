@@ -25,7 +25,6 @@ import java.util.Objects;
 public class ProjectProperty {
     //#region Constants
     public static final String EQ_SEPARATOR = "=";
-    public static final String VB_SEPARATOR = ":";
     public static final String LINK_FILE = "link.properties";
     public static final String VERSION_FILE = "version.properties";
     private static final String NEXUS_NAME = "nexus_link";
@@ -112,25 +111,7 @@ public class ProjectProperty {
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
         for (String name : versions.keySet()) {
-            if (!StringUtils.isEmpty(versions.get(name))) {
-                String[] vB = resolveVersionBranch(versions.get(name));
-                result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1], project));
-            } else {
-                result.put(name, new ProjectComponent(name, "", links.get(name), "", project));
-            }
-        }
-        return result;
-    }
-
-    public static String[] resolveVersionBranch(String input) {
-        String[] result = new String[2];
-        if (input.contains(VB_SEPARATOR)) {
-            int idx = input.indexOf(VB_SEPARATOR);
-            result[0] = input.substring(0, idx);
-            result[1] = input.substring(idx + 1);
-        } else {
-            result[0] = "";
-            result[1] = input;
+            result.put(name, new ProjectComponent(name, versions.get(name), links.get(name), project));
         }
         return result;
     }

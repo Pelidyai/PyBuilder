@@ -4,29 +4,30 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 public class ProcessRunner {
-    public static String runCommand(String command) throws Exception{
+    public static String runCommand(String command) throws Exception {
         Process process = Runtime.getRuntime().exec(command);
         process.waitFor();
         String errors = new String(process.getErrorStream().readAllBytes());
         String output = new String(process.getInputStream().readAllBytes());
         process.destroy();
-        if(process.exitValue() != 0 && !errors.isEmpty() && !errors.contains("No stash entries found")){
+        if (process.exitValue() != 0 && !errors.isEmpty()
+                && !errors.contains("No stash entries found") && !errors.contains("Switched to branch")) {
             throw new Exception(errors);
         }
         return output;
     }
 
-    public static String runCommand(String command, long timeoutInSeconds) throws Exception{
+    public static String runCommand(String command, long timeoutInSeconds) throws Exception {
         Process process;
-        try{
+        try {
             process = executeCommandLine(command, timeoutInSeconds * 1000).getProcess();
-        } catch (TimeoutException e){
+        } catch (TimeoutException e) {
             return "";
         }
         String errors = new String(process.getErrorStream().readAllBytes());
         String output = new String(process.getInputStream().readAllBytes());
         process.destroy();
-        if(process.exitValue() != 0 && !errors.isEmpty() && !errors.contains("No stash entries found")){
+        if (process.exitValue() != 0 && !errors.isEmpty() && !errors.contains("No stash entries found")) {
             throw new Exception(errors);
         }
         return output;
@@ -45,7 +46,7 @@ public class ProcessRunner {
                 return worker;
             else
                 throw new TimeoutException();
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             worker.interrupt();
             Thread.currentThread().interrupt();
             throw ex;
@@ -57,9 +58,11 @@ public class ProcessRunner {
     private static class Worker extends Thread {
         private final Process process;
         private Integer exit;
+
         private Worker(Process process) {
             this.process = process;
         }
+
         public void run() {
             try {
                 exit = process.waitFor();
