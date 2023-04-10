@@ -5,15 +5,26 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-abstract public class AbstractBackgroundThread extends Task.Backgroundable{
+abstract public class AbstractBackgroundThread extends Task.Backgroundable {
+    protected boolean isAlive = false;
+    protected final String notificationGroupID;
+    protected final String processName;
 
-    public boolean isAlive = false;
-
-    public AbstractBackgroundThread(@Nullable Project project, @NotNull String title) {
+    public AbstractBackgroundThread(@Nullable Project project, @NotNull String title, String notificationGroupID, String processName) {
         super(project, title, false);
+        this.notificationGroupID = notificationGroupID;
+        this.processName = processName;
     }
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public String getNotificationGroupID() {
+        return this.notificationGroupID;
+    }
+
+    public String getProcessName() {
+        return processName;
     }
 }

@@ -12,11 +12,15 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.NonEmptyInputValidator;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jetbrains.python.sdk.PythonSdkUtil;
+import com.pickaim.python_builder.NotificationGroupID;
 import com.pickaim.python_builder.ProjectComponent;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class ProjectProperty {
     //#region Constants
@@ -40,14 +44,14 @@ public class ProjectProperty {
     //#endregion
 
     //#region Public methods
-    public static ProjectProperty getInstance(Project project){
-        if(!propertiesMap.containsKey(project)){
+    public static ProjectProperty getInstance(Project project) {
+        if (!propertiesMap.containsKey(project)) {
             propertiesMap.put(project, new ProjectProperty(project));
         }
         return propertiesMap.get(project);
     }
 
-    private ProjectProperty(Project project){
+    private ProjectProperty(Project project) {
         this.project = project;
         projectPath = project.getBasePath();
         projectName = project.getName();
@@ -59,13 +63,13 @@ public class ProjectProperty {
     public void checkInterpreter() {
         try {
             File configFile = new File(configPath);
-            if(!configFile.exists()){
+            if (!configFile.exists()) {
                 boolean isSuccessful = configFile.createNewFile();
-                if(!isSuccessful){
+                if (!isSuccessful) {
                     throw new RuntimeException("Cannot open: " + configPath);
                 }
             }
-            if(configFile.length() != 0 && StringUtils.isEmpty(pythonDir)){
+            if (configFile.length() != 0 && StringUtils.isEmpty(pythonDir)) {
                 ObjectInputStream saveInputStream = new ObjectInputStream(
                         new FileInputStream(configFile)
                 );
@@ -79,9 +83,9 @@ public class ProjectProperty {
         }
     }
 
-    public void resetInterpreter(){
+    public void resetInterpreter() {
         pythonDir = chooseInterpreter();
-        Notifications.Bus.notify(new Notification("util-settings", "Interpreter setting",
+        Notifications.Bus.notify(new Notification(NotificationGroupID.UTIL_SETTINGS, "Interpreter setting",
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
         File configFile = new File(configPath);
         try {
@@ -94,21 +98,21 @@ public class ProjectProperty {
         }
     }
 
-    public void update(){
+    public void update() {
         try {
             updateMe();
             checkInterpreter();
         } catch (Exception e) {
-            Notifications.Bus.notify(new Notification("util-settings", "Update error", e.getMessage(), NotificationType.ERROR));
+            Notifications.Bus.notify(new Notification(NotificationGroupID.UTIL_SETTINGS, "Update error", e.getMessage(), NotificationType.ERROR));
         }
     }
 
-    public static Map<String, ProjectComponent> resolveComponents(String path, Project project){
+    public static Map<String, ProjectComponent> resolveComponents(String path, Project project) {
         Map<String, String> versions = load(path, VERSION_FILE);
         Map<String, String> links = load(path, LINK_FILE);
         Map<String, ProjectComponent> result = new HashMap<>();
-        for(String name: versions.keySet()){
-            if(!StringUtils.isEmpty(versions.get(name))) {
+        for (String name : versions.keySet()) {
+            if (!StringUtils.isEmpty(versions.get(name))) {
                 String[] vB = resolveVersionBranch(versions.get(name));
                 result.put(name, new ProjectComponent(name, vB[0], links.get(name), vB[1], project));
             } else {
@@ -117,10 +121,10 @@ public class ProjectProperty {
         }
         return result;
     }
-    
-    public static String[] resolveVersionBranch(String input){
+
+    public static String[] resolveVersionBranch(String input) {
         String[] result = new String[2];
-        if(input.contains(VB_SEPARATOR)) {
+        if (input.contains(VB_SEPARATOR)) {
             int idx = input.indexOf(VB_SEPARATOR);
             result[0] = input.substring(0, idx);
             result[1] = input.substring(idx + 1);
@@ -130,7 +134,7 @@ public class ProjectProperty {
         }
         return result;
     }
-    
+
     public static Map<String, String> load(String path, String fileName) {
         String filePath = path + File.separator + fileName;
         Map<String, String> resultMap = new HashMap<>();
@@ -152,7 +156,7 @@ public class ProjectProperty {
         }
     }
 
-    private static String chooseInterpreter(){
+    private static String chooseInterpreter() {
         List<Sdk> pythonSdks = PythonSdkUtil.getAllSdks();
         if (pythonSdks.isEmpty()) {
             Messages.showErrorDialog("Python interpreter not found", "Python Interpreter Problem");
@@ -172,18 +176,18 @@ public class ProjectProperty {
     }
 
 
-    public static void saveChanges(){
+    public static void saveChanges() {
         FileDocumentManager documentManager = FileDocumentManager.getInstance();
-        for(Document unsavedDoc: documentManager.getUnsavedDocuments()){
+        for (Document unsavedDoc : documentManager.getUnsavedDocuments()) {
             documentManager.saveDocument(unsavedDoc);
         }
         SaveAndSyncHandler.getInstance().refreshOpenFiles();
         VirtualFileManager.getInstance().refreshWithoutFileWatcher(true);
     }
     //#endregion
-    
+
     //#region Private methods
-    private void updateMe(){
+    private void updateMe() {
         Map<String, String> links = load(projectPath, LINK_FILE);
         nexusLink = links.get(NEXUS_NAME);
         projectComponents = resolveComponents(projectPath, project);
@@ -196,7 +200,7 @@ public class ProjectProperty {
     //#endregion
 
     //#region Getters
-    public String getPythonDir(){
+    public String getPythonDir() {
         return pythonDir;
     }
 
@@ -208,7 +212,7 @@ public class ProjectProperty {
         return projectPath;
     }
 
-    public String getNexusLink(){
+    public String getNexusLink() {
         return nexusLink;
     }
 
@@ -216,7 +220,7 @@ public class ProjectProperty {
         return projectName;
     }
 
-    public ProjectComponent getCurrentComponent(){
+    public ProjectComponent getCurrentComponent() {
         return projectComponents.get(projectName);
     }
 

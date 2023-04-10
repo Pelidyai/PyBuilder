@@ -6,16 +6,16 @@ import com.pickaim.python_builder.utils.ProjectProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ReleasePublishThread extends PublishThread {
-    public ReleasePublishThread(@Nullable Project project, @NotNull String title) {
-        super(project, title, "Release publish");
+public class RepublishThread extends PublishThread {
+
+    public RepublishThread(@Nullable Project project, @NotNull String title) {
+        super(project, title, "Republish");
     }
 
-    @Override
     protected void publish() throws Exception {
         ProjectComponent currentComponent = ProjectProperty.getInstance(myProject).getCurrentComponent();
         if (currentComponent != null) {
-            publishToBranch(currentComponent.getReleaseBranch(), currentComponent.getLink());
+            publishToBranch(currentComponent.getBranch(), currentComponent.getLink(), true);
         } else {
             throw new Exception("Cannot find project component publishing info");
         }

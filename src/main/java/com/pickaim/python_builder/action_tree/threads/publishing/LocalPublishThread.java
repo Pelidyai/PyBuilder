@@ -8,13 +8,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
-public class LocalPublishThread extends PublishThread{
+public class LocalPublishThread extends PublishThread {
     public LocalPublishThread(@Nullable Project project, @NotNull String title) {
-        super(project, title);
+        super(project, title, "Local publish");
     }
 
     @Override
-    protected void publish() throws Exception{
+    protected void publish() throws Exception {
         String targetPath = ProjectProperty.getInstance(myProject).getPythonDir()
                 + File.separator + ProjectProperty.getInstance(myProject).getProjectName();
         FileUtils.deleteDirectory(
@@ -31,7 +31,7 @@ public class LocalPublishThread extends PublishThread{
         FileUtils.copyDirectory(
                 innerSrcDir,
                 new File(ProjectProperty.getInstance(myProject).getPythonDir()
-                        + File.separator +  ProjectProperty.getInstance(myProject).getProjectName())
+                        + File.separator + ProjectProperty.getInstance(myProject).getProjectName())
         );
         FileUtils.deleteDirectory(innerSrcDir);
     }

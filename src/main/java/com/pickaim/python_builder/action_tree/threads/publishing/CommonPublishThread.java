@@ -6,9 +6,9 @@ import com.pickaim.python_builder.utils.ProjectProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CommonPublishThread extends PublishThread{
+public class CommonPublishThread extends PublishThread {
     public CommonPublishThread(@Nullable Project project, @NotNull String title) {
-        super(project, title);
+        super(project, title, "Publish");
     }
 
     protected void publish() throws Exception {
