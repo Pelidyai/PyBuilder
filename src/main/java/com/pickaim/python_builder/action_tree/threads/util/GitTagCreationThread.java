@@ -18,7 +18,7 @@ public class GitTagCreationThread extends AbstractBackgroundThread {
         String projectPath = ProjectProperty.getInstance(myProject).getProjectPath();
         String tagName = "v." + ProjectProperty.getInstance(myProject).getCurrentComponent().getVersion();
         ProcessRunner.runCommand("cmd.exe /c cd /d \"" + projectPath + "\"" +
-                " && " + "git tag -a " + tagName + " -b \"" + tagName + "\"" +
+                " && " + "git tag -a " + tagName + " -m \"" + tagName + "\"" +
                 " && " + "git push origin " + tagName);
     }
 }
