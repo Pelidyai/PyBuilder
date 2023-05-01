@@ -34,17 +34,17 @@ abstract public class AbstractBackgroundThread extends Task.Backgroundable {
 
     @Override
     public void run(@NotNull ProgressIndicator indicator) {
-        indicator.setText("Publish");
+        indicator.setText(getTitle());
         try {
             isAlive = true;
             doThreadAction(indicator);
             isAlive = false;
-            Notifications.Bus.notify(new Notification(this.getNotificationGroupID(), "Publish results",
-                    "Publishing successful", NotificationType.INFORMATION));
+            Notifications.Bus.notify(new Notification(this.getNotificationGroupID(), this.getProcessName() + " results",
+                    this.getProcessName() + " successful", NotificationType.INFORMATION));
         } catch (Exception e) {
             isAlive = false;
             Notifications.Bus.notify(new Notification(this.getNotificationGroupID(),
-                    "Publish error", e.getMessage(), NotificationType.ERROR));
+                    this.getProcessName() + " error", e.getMessage(), NotificationType.ERROR));
         }
     }
 

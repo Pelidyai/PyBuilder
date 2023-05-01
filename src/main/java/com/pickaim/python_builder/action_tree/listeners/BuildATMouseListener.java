@@ -11,7 +11,7 @@ public class BuildATMouseListener extends AbstractActionTreeMouseListener {
 
     public BuildATMouseListener(JTree tree, Project project) {
         super(tree, project);
-        commandToTask.put(TreeCommands.BUILD, new BuildThread(project, "Build process", "Project build"));
-        commandToTask.put(TreeCommands.CLEAN, new CleanThread(project, "Clean process", "Dependencies clean"));
+        commandToTask.put(TreeCommands.BUILD, new BuildThread(project));
+        commandToTask.put(TreeCommands.CLEAN, new CleanThread(project));
     }
 }

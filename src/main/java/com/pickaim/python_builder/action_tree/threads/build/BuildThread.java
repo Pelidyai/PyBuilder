@@ -8,8 +8,8 @@ import com.pickaim.python_builder.utils.ProjectBuilder;
 import com.pickaim.python_builder.utils.ProjectProperty;
 
 public class BuildThread extends AbstractBackgroundThread {
-    public BuildThread(Project project, String title, String processName) {
-        super(project, title, NotificationGroupID.BUILD, processName);
+    public BuildThread(Project project) {
+        super(project, "Build process", NotificationGroupID.BUILD, "Build");
     }
 
     @Override

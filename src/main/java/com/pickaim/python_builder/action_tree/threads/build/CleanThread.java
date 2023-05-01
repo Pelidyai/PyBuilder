@@ -12,8 +12,8 @@ import java.io.File;
 import java.util.Map;
 
 public class CleanThread extends AbstractBackgroundThread {
-    public CleanThread(Project project, String title, String processName) {
-        super(project, title, NotificationGroupID.CLEAN, processName);
+    public CleanThread(Project project) {
+        super(project, "Clean process", NotificationGroupID.CLEAN, "Dependencies clean");
     }
 
     @Override
