@@ -52,6 +52,7 @@ public class TreeBuilder {
     private static void addUtilNode(DefaultMutableTreeNode treeRoot) {
         SimpleTreeNode utilTree = new SimpleTreeNode("utils");
         utilTree.add(new SimpleTreeNode(TreeCommands.INTERPRETER));
+        utilTree.add(new SimpleTreeNode(TreeCommands.CREATE_TAG));
         treeRoot.add(utilTree);
     }
 }

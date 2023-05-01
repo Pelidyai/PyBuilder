@@ -40,10 +40,11 @@ public class ProcessRunner {
         worker.start();
         try {
             worker.join(timeout);
-            if (worker.exit != null)
+            if (worker.exit != null) {
                 return worker;
-            else
+            } else {
                 throw new TimeoutException();
+            }
         } catch (InterruptedException ex) {
             worker.interrupt();
             Thread.currentThread().interrupt();
