@@ -1,5 +1,9 @@
 package com.pickaim.python_builder.action_tree.threads;
 
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
@@ -27,4 +31,22 @@ abstract public class AbstractBackgroundThread extends Task.Backgroundable {
     public String getProcessName() {
         return processName;
     }
+
+    @Override
+    public void run(@NotNull ProgressIndicator indicator) {
+        indicator.setText("Publish");
+        try {
+            isAlive = true;
+            doThreadAction(indicator);
+            isAlive = false;
+            Notifications.Bus.notify(new Notification(this.getNotificationGroupID(), "Publish results",
+                    "Publishing successful", NotificationType.INFORMATION));
+        } catch (Exception e) {
+            isAlive = false;
+            Notifications.Bus.notify(new Notification(this.getNotificationGroupID(),
+                    "Publish error", e.getMessage(), NotificationType.ERROR));
+        }
+    }
+
+    abstract protected void doThreadAction(ProgressIndicator indicator) throws Exception;
 }

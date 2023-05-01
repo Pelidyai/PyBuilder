@@ -17,20 +17,18 @@ public class ProcessRunner {
         return output;
     }
 
-    public static String runCommand(String command, long timeoutInSeconds) throws Exception {
+    public static void runCommand(String command, long timeoutInSeconds) throws Exception {
         Process process;
         try {
             process = executeCommandLine(command, timeoutInSeconds * 1000).getProcess();
         } catch (TimeoutException e) {
-            return "";
+            return;
         }
         String errors = new String(process.getErrorStream().readAllBytes());
-        String output = new String(process.getInputStream().readAllBytes());
         process.destroy();
         if (process.exitValue() != 0 && !errors.isEmpty() && !errors.contains("No stash entries found")) {
             throw new Exception(errors);
         }
-        return output;
     }
 
     private static Worker executeCommandLine(final String commandLine, final long timeout)

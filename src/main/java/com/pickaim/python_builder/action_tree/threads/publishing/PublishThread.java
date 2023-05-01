@@ -1,8 +1,5 @@
 package com.pickaim.python_builder.action_tree.threads.publishing;
 
-import com.intellij.notification.Notification;
-import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.NotificationGroupID;
@@ -17,30 +14,12 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PublishThread extends AbstractBackgroundThread {
+abstract public class PublishThread extends AbstractBackgroundThread {
     public PublishThread(@Nullable Project project, @NotNull String title, String processName) {
         super(project, title, NotificationGroupID.PUBLISH, processName);
     }
 
-    @Override
-    public void run(@NotNull ProgressIndicator indicator) {
-        indicator.setText("Publish");
-        try {
-            isAlive = true;
-            publish();
-            isAlive = false;
-            Notifications.Bus.notify(new Notification(NotificationGroupID.PUBLISH, "Publish results",
-                    "Publishing successful", NotificationType.INFORMATION));
-        } catch (Exception e) {
-            isAlive = false;
-            Notifications.Bus.notify(new Notification(NotificationGroupID.PUBLISH,
-                    "Publish error", e.getMessage(), NotificationType.ERROR));
-        }
-    }
-
-    protected void publish() throws Exception {
-        //Override if necessary
-    }
+    abstract void publish() throws Exception;
 
     protected void publishToBranch(String branch, String link) throws Exception {
         this.publishToBranch(branch, link, false);
@@ -87,5 +66,10 @@ public class PublishThread extends AbstractBackgroundThread {
                 " & " + "git branch -D " + branch +
                 " && " + "git stash pop"
         );
+    }
+
+    @Override
+    protected void doThreadAction(ProgressIndicator indicator) throws Exception {
+        publish();
     }
 }

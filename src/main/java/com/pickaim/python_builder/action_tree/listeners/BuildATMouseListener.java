@@ -2,8 +2,8 @@ package com.pickaim.python_builder.action_tree.listeners;
 
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.action_tree.TreeCommands;
-import com.pickaim.python_builder.action_tree.threads.BuildThread;
-import com.pickaim.python_builder.action_tree.threads.CleanThread;
+import com.pickaim.python_builder.action_tree.threads.build.BuildThread;
+import com.pickaim.python_builder.action_tree.threads.build.CleanThread;
 
 import javax.swing.*;
 
