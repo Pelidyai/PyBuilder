@@ -3,12 +3,11 @@ package com.pickaim.python_builder.action_tree.threads.publishing;
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.ProjectComponent;
 import com.pickaim.python_builder.utils.ProjectProperty;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPublishThread extends PublishThread {
-    public CommonPublishThread(@Nullable Project project, @NotNull String title) {
-        super(project, title, "Publish");
+    public CommonPublishThread(@Nullable Project project) {
+        super(project, "Publish process", "Publish");
     }
 
     protected void publish() throws Exception {

@@ -3,13 +3,12 @@ package com.pickaim.python_builder.action_tree.threads.publishing;
 import com.intellij.openapi.project.Project;
 import com.pickaim.python_builder.ProjectComponent;
 import com.pickaim.python_builder.utils.ProjectProperty;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class RepublishThread extends PublishThread {
 
-    public RepublishThread(@Nullable Project project, @NotNull String title) {
-        super(project, title, "Republish");
+    public RepublishThread(@Nullable Project project) {
+        super(project, "Republish process", "Republish");
     }
 
     protected void publish() throws Exception {

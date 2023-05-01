@@ -14,12 +14,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public abstract class AbstractActionTreeMouseListener implements MouseListener {
     private final JTree tree;
 
     protected final Project project;
     protected final Map<String, AbstractBackgroundThread> commandToTask = new HashMap<>();
+    protected final Map<String, PreAction<Integer>> preActions = new HashMap<>();
 
     public AbstractActionTreeMouseListener(JTree tree, Project project) {
         this.tree = tree;
@@ -65,6 +67,17 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
     }
 
     void runCommand(String command) {
+        PreAction<Integer> preAction = preActions.get(command);
+        if (preAction != null) {
+            try {
+                int result = preAction.run();
+                if (result == PreAction.FAIL) {
+                    return;
+                }
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
         AbstractBackgroundThread commandTask = commandToTask.get(command);
         if (commandTask == null) {
             return;
