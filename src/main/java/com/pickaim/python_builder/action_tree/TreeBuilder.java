@@ -24,6 +24,7 @@ public class TreeBuilder {
         treeCellRenderer.setLeafIcon(AllIcons.Nodes.Services);
         treeCellRenderer.setClosedIcon(AllIcons.Nodes.ConfigFolder);
         treeCellRenderer.setOpenIcon(AllIcons.Actions.GeneratedFolder);
+        treeCellRenderer.setOpaque(false);
 
         tree.addMouseListener(new BuildATMouseListener(tree, project));
         tree.addMouseListener(new PublishATMouseListener(tree, project));
