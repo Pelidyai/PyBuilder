@@ -160,7 +160,9 @@ public class ProjectProperty {
             sdkIdx = List.of(variants).indexOf(selected);
         }
 
-        return pythonSdks.get(sdkIdx).getName() + "\\Lib\\site-packages";
+        String homePath = pythonSdks.get(sdkIdx).getHomePath();
+        assert homePath != null;
+        return homePath.substring(0, homePath.lastIndexOf("\\")) + "\\Lib\\site-packages";
     }
 
 
