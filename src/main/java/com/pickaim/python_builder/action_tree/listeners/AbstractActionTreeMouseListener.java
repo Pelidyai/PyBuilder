@@ -21,7 +21,7 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
 
     protected final Project project;
     protected final Map<String, AbstractBackgroundThread> commandToTask = new HashMap<>();
-    protected final Map<String, PreAction<Integer>> preActions = new HashMap<>();
+    protected final Map<String, PreAction<Object>> preActions = new HashMap<>();
 
     public AbstractActionTreeMouseListener(JTree tree, Project project) {
         this.tree = tree;
@@ -67,11 +67,11 @@ public abstract class AbstractActionTreeMouseListener implements MouseListener {
     }
 
     void runCommand(String command) {
-        PreAction<Integer> preAction = preActions.get(command);
+        PreAction<Object> preAction = preActions.get(command);
         if (preAction != null) {
             try {
-                int result = preAction.run();
-                if (result == PreAction.FAIL) {
+                Object result = preAction.run();
+                if (result == Integer.valueOf(PreAction.FAIL)) {
                     return;
                 }
             } catch (ExecutionException | InterruptedException e) {

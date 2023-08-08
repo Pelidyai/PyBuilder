@@ -1,7 +1,7 @@
 plugins {
     id("java")
     id("maven-publish")
-    id("org.jetbrains.intellij") version "1.8.0"
+    id("org.jetbrains.intellij") version "1.10.2"
 }
 
 group = "com.pickaim"
@@ -15,10 +15,10 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.1.1")
+    version.set("2023.2")
     type.set("PC") // Target IDE Platform
 
-    plugins.set(listOf("PythonCore"/* Plugin Dependencies */))
+    plugins.set(listOf("PythonCore"))
 }
 
 
@@ -31,13 +31,13 @@ publishing {
 tasks {
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 
     patchPluginXml {
         sinceBuild.set("220")
-        untilBuild.set("231.*")
+        untilBuild.set("232.*")
     }
 
     signPlugin {

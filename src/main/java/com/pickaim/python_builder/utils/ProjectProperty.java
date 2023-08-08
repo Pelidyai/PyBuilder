@@ -20,7 +20,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ProjectProperty {
     //#region Constants
@@ -40,6 +39,7 @@ public class ProjectProperty {
     private final String configPath;
     private final String projectPath;
     private static final Map<Project, ProjectProperty> propertiesMap = new HashMap<>();
+    private static final Map<Project, String> interpretersPaths = new HashMap<>();
     //#endregion
 
     //#region Public methods
@@ -83,14 +83,20 @@ public class ProjectProperty {
     }
 
     public void resetInterpreter() {
-        pythonDir = chooseInterpreter();
+        String possibleInterpreterPath = interpretersPaths.get(project);
+        if (possibleInterpreterPath == null) {
+            Notifications.Bus.notify(
+                    new Notification(NotificationGroupID.UTIL_SETTINGS, "Interpreter setting",
+                            "Interpreter not found", NotificationType.ERROR)
+            );
+            return;
+        }
+        pythonDir = possibleInterpreterPath;
         Notifications.Bus.notify(new Notification(NotificationGroupID.UTIL_SETTINGS, "Interpreter setting",
                 "Interpreter was set to " + pythonDir, NotificationType.INFORMATION));
         File configFile = new File(configPath);
         try {
-            ObjectOutputStream saveStream = new ObjectOutputStream(
-                    new FileOutputStream(configFile)
-            );
+            ObjectOutputStream saveStream = new ObjectOutputStream(new FileOutputStream(configFile));
             saveStream.writeObject(pythonDir);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -137,7 +143,7 @@ public class ProjectProperty {
         }
     }
 
-    private static String chooseInterpreter() {
+    public static String chooseInterpreter() {
         List<Sdk> pythonSdks = PythonSdkUtil.getAllSdks();
         if (pythonSdks.isEmpty()) {
             Messages.showErrorDialog("Python interpreter not found", "Python Interpreter Problem");
@@ -153,7 +159,8 @@ public class ProjectProperty {
                     Messages.getQuestionIcon(), variants, variants[0], new NonEmptyInputValidator());
             sdkIdx = List.of(variants).indexOf(selected);
         }
-        return Objects.requireNonNull(PythonSdkUtil.getSitePackagesDirectory(pythonSdks.get(sdkIdx))).getPath();
+
+        return pythonSdks.get(sdkIdx).getName() + "\\Lib\\site-packages";
     }
 
 
@@ -177,6 +184,10 @@ public class ProjectProperty {
     //#endregion
 
     //#region Setters
+
+    public void setInterpreterPath(String path) {
+        interpretersPaths.put(project, path);
+    }
 
     //#endregion
 

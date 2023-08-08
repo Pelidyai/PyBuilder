@@ -6,6 +6,7 @@ import com.pickaim.python_builder.action_tree.TreeCommands;
 import com.pickaim.python_builder.action_tree.threads.publishing.CommonPublishThread;
 import com.pickaim.python_builder.action_tree.threads.publishing.LocalPublishThread;
 import com.pickaim.python_builder.action_tree.threads.publishing.RepublishThread;
+import com.pickaim.python_builder.utils.ProjectProperty;
 
 import javax.swing.*;
 
@@ -20,6 +21,12 @@ public class PublishATMouseListener extends AbstractActionTreeMouseListener {
             int answer = Messages.showOkCancelDialog("Are you sure want to start republish process?",
                     "Republish", "Confirm", "Abort", Messages.getQuestionIcon());
             return answer == Messages.CANCEL ? PreAction.FAIL : PreAction.OK;
+        }));
+
+        preActions.put(TreeCommands.INTERPRETER, new PreAction<>(() -> {
+            String selectedInterpreter = ProjectProperty.chooseInterpreter();
+            ProjectProperty.getInstance(project).setInterpreterPath(selectedInterpreter);
+            return selectedInterpreter.isEmpty() ? PreAction.FAIL : PreAction.OK;
         }));
     }
 }

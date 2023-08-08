@@ -57,9 +57,9 @@ public class ProjectComponent {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ProjectComponent))
+        if (!(obj instanceof ProjectComponent other)) {
             return false;
-        ProjectComponent other = (ProjectComponent) obj;
+        }
         return other.getLink().equals(this.link)
                 && other.getName().equals(this.name)
                 && other.getBranch().equals(this.branch);

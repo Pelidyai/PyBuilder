@@ -14,12 +14,12 @@ public class MyToolWindowFactory implements ToolWindowFactory {
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         init(project);
         ToolbarView myToolWindow = new ToolbarView(toolWindow);
-        ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+        ContentFactory contentFactory = ContentFactory.getInstance();
         Content content = contentFactory.createContent(myToolWindow.getContent(), "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
-    private void init(Project project){
+    private void init(Project project) {
         ProjectProperty.getInstance(project).update();
     }
 

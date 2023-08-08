@@ -14,6 +14,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 
 public class TreeBuilder {
     public static JTree buildActionTree(Project project) {
+        UIManager.put("Tree.rendererFillBackground", false);
         SimpleTreeNode treeRoot = new SimpleTreeNode(project.getName());
         addBuildNode(treeRoot);
         addPublishNode(treeRoot);
